@@ -1,0 +1,29 @@
+node_modules
+dist
+*.local
+.env.*.local
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Lighthouse temp (versioned reports live in lighthouse/reports)
+.lighthouseci
+
+# Figma extraction: raw API dump, credentials and full-resolution references stay local.
+# Optimized assets used by the app live in public/; tokens.md and inventory.md are versioned.
+design/figma-file.json
+design/figma-calls.log
+design/frames/
+design/assets/
+.figma-token
+
+# Editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.log
