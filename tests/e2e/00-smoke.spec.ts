@@ -1,13 +1,9 @@
 import { expect, test } from '@playwright/test'
 
-test('REST goes through MSW and mock events reach the UI through Socket.IO', async ({ page }) => {
+test('home renders the catalog from the mocked API', async ({ page }) => {
   await page.goto('/')
-
-  await expect(page.getByTestId('health')).toHaveText('REST: ok')
-  await expect(page.getByTestId('socket')).toHaveText('Socket: connected')
-
-  await page.getByRole('button', { name: 'Disparar evento no mock' }).click()
-  await expect(page.getByTestId('events')).toContainText('hello from the mock server')
+  await expect(page.getByRole('link', { name: 'Emerald Ape #042' })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Paginação do catálogo' })).toBeVisible()
 })
 
 test('unknown routes render the not found page after a direct load', async ({ page }) => {

@@ -115,4 +115,36 @@
   .skip-link {
     @apply bg-primary text-primary-foreground fixed top-2 left-2 z-[100] -translate-y-16 rounded-md px-4 py-2 font-bold transition-transform focus:translate-y-0 motion-reduce:transition-none;
   }
+
+  /* 1200px content column from the Figma frames (120px gutters at 1440). */
+  .page-container {
+    @apply mx-auto w-full max-w-[1248px] px-4 sm:px-6;
+  }
+
+  .skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--surface-card);
+  }
+
+  .skeleton-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(245 241 235 / 0.07), transparent);
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-shimmer::after {
+      animation: none;
+    }
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }

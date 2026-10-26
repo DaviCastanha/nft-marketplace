@@ -3,7 +3,8 @@ dist
 *.local
 .env.*.local
 
-# Playwright
+# Playwright (zz-* specs are local review helpers, e.g. screenshot capture)
+/tests/e2e/zz-*.spec.ts
 /test-results/
 /playwright-report/
 /blob-report/

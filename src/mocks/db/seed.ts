@@ -128,7 +128,8 @@ function buildNft(random: Random, index: number, base: { name: string; artwork: 
   const category: Category = index < FIGMA_NFTS.length ? 'arte-digital' : random.pick(CATEGORIES)
   const network: Network = index < FIGMA_NFTS.length ? 'ethereum' : random.pick(NETWORKS)
   const soldOut = index >= FIGMA_NFTS.length && random.chance(0.08)
-  const rare = base.rare ?? random.chance(0.15)
+  // Figma cards carry their own flags; generated ones get a random share of rare pieces.
+  const rare = base.rare ?? (index >= FIGMA_NFTS.length && random.chance(0.15))
   const editions = buildEditions(random, base.price, rare, soldOut)
   const creator = random.pick(CREATORS)
   const collection = ARTWORK_COLLECTION[artwork]
@@ -184,8 +185,9 @@ function generatedNfts(random: Random): Array<{ name: string; artwork: Artwork; 
     const name = `${random.pick(ADJECTIVES)} ${random.pick(NOUNS[artwork])} #${String(random.int(1, 999)).padStart(3, '0')}`
     if (used.has(name)) continue
     used.add(name)
-    // Skewed towards cheaper pieces, spanning the 0.02–12.30 ETH range from the layout.
-    const price = Big2(0.02 + random.next() ** 2.4 * 12.28)
+    // Skewed towards cheaper pieces, spanning the 0.02–12.30 ETH range from the layout
+    // (the first generated piece pins the upper bound so the price filter matches the Figma label).
+    const price = list.length === 0 ? '12.30' : Big2(0.02 + random.next() ** 2.4 * 12.28)
     list.push({ name, artwork, price })
   }
   return list

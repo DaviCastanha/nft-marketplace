@@ -1,5 +1,12 @@
 import { QueryClient } from '@tanstack/react-query'
-import { isRetryableError } from '@/shared/api/errors'
+import { isRetryableError, type ApiError } from '@/shared/api/errors'
+
+declare module '@tanstack/react-query' {
+  interface Register {
+    // Every request goes through the Axios client, which normalizes failures into ApiError.
+    defaultError: ApiError
+  }
+}
 
 const MAX_QUERY_RETRIES = 2
 
