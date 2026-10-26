@@ -104,19 +104,20 @@ function FormLabel({
   )
 }
 
-function FormControl({ ...props }: React.ComponentProps<typeof Slot.Root>) {
-  const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
+/**
+ * Links the control to its error message only while one is rendered (no dangling
+ * id references). Pass `describedBy` to also reference a visible description.
+ */
+function FormControl({ describedBy, ...props }: React.ComponentProps<typeof Slot.Root> & { describedBy?: string }) {
+  const { error, formItemId, formMessageId } = useFormField()
+  const ids = [describedBy, error ? formMessageId : undefined].filter(Boolean).join(" ")
 
   return (
     <Slot.Root
       data-slot="form-control"
       id={formItemId}
-      aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
-      }
-      aria-invalid={!!error}
+      aria-describedby={ids || undefined}
+      aria-invalid={error ? true : undefined}
       {...props}
     />
   )
