@@ -1,6 +1,6 @@
 import { touchNft } from '@/mocks/domain/catalog'
 import { getCart, touchCart, userCartKey } from '@/mocks/domain/cart'
-import { publishNftUpdated, publishOrderUpdated } from '@/mocks/domain/events'
+import { publishNftUpdated, publishOrderUpdated, snapshotNft } from '@/mocks/domain/events'
 import { db, persist } from '@/mocks/db/store'
 import type { OrderRecord } from '@/mocks/db/types'
 import { randomHex } from '@/mocks/lib/random'
@@ -16,10 +16,10 @@ export function reserveStock(order: OrderRecord, direction: 'reserve' | 'release
     const nft = db().nfts.find((n) => n.id === line.nftId)
     const edition = nft?.editions.find((e) => e.id === line.editionId)
     if (!nft || !edition) continue
-    const previousPrice = nft.price
+    const before = snapshotNft(nft)
     edition.available = Math.max(0, edition.available + (direction === 'reserve' ? -line.quantity : line.quantity))
     touchNft(nft)
-    publishNftUpdated(nft, previousPrice)
+    publishNftUpdated(nft, before)
   }
 }
 

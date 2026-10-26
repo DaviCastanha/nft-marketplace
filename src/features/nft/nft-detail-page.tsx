@@ -25,7 +25,14 @@ const route = getRouteApi('/nfts/$nftId')
 const TAB_TRIGGER =
   'flex-none px-0 pb-2 text-lg leading-6 font-normal text-foreground hover:text-text-accent data-[state=active]:font-bold data-[state=active]:text-text-accent dark:text-foreground dark:data-[state=active]:border-transparent dark:data-[state=active]:text-text-accent after:bottom-[-1px] after:h-[3px] after:bg-primary'
 
+/**
+ * Initial edition: 1/50 (as in the Figma detail) when it has stock, otherwise the
+ * cheapest available one. It does not depend on live prices, so a realtime update
+ * never silently switches the edition the user is looking at.
+ */
 function defaultEdition(editions: Edition[]): Edition {
+  const preferred = editions.find((e) => e.id === '1-50' && e.available > 0)
+  if (preferred) return preferred
   const available = editions.filter((e) => e.available > 0)
   const pool = available.length > 0 ? available : editions
   return pool.reduce((min, e) => (Number(e.price) < Number(min.price) ? e : min))

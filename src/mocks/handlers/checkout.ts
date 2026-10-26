@@ -3,7 +3,7 @@ import { createOrderInputSchema, quoteInputSchema } from '@/shared/contracts/com
 import { requireUser } from '@/mocks/domain/auth'
 import { touchNft } from '@/mocks/domain/catalog'
 import { buildQuote, resolveCartKey, sameTerms, userCartKey } from '@/mocks/domain/cart'
-import { publishNftUpdated } from '@/mocks/domain/events'
+import { publishNftUpdated, snapshotNft } from '@/mocks/domain/events'
 import { ORDER_SETTLEMENT_MS, reserveStock, scheduleSettlement } from '@/mocks/domain/orders'
 import { toOrder } from '@/mocks/domain/orders-view'
 import { db, persist } from '@/mocks/db/store'
@@ -26,7 +26,7 @@ function scheduleCheckoutChange(quote: QuoteRecord) {
     const nft = db().nfts.find((n) => n.id === firstLine.nftId)
     const edition = nft?.editions.find((e) => e.id === firstLine.editionId)
     if (!nft || !edition) return
-    const previousPrice = nft.price
+    const before = snapshotNft(nft)
     if (change === 'price-change') {
       edition.price = (Math.round(Number(edition.price) * PRICE_CHANGE_FACTOR * 100) / 100).toFixed(2)
     } else {
@@ -34,7 +34,7 @@ function scheduleCheckoutChange(quote: QuoteRecord) {
     }
     touchNft(nft)
     persist()
-    publishNftUpdated(nft, previousPrice)
+    publishNftUpdated(nft, before)
   }, CHECKOUT_CHANGE_DELAY_MS)
 }
 

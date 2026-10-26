@@ -2,7 +2,7 @@ import { HttpResponse } from 'msw'
 import { z } from 'zod'
 import { ethAmountSchema } from '@/shared/lib/money'
 import { findEdition, findNft, touchNft } from '@/mocks/domain/catalog'
-import { publishNftUpdated, replayLastNftEvent } from '@/mocks/domain/events'
+import { publishNftUpdated, replayLastNftEvent, snapshotNft } from '@/mocks/domain/events'
 import { settleOrder } from '@/mocks/domain/orders'
 import { db, resetDb } from '@/mocks/db/store'
 import { fail, noContent, parseBody } from '@/mocks/lib/http'
@@ -53,11 +53,11 @@ export const controlHandlers = [
     const nft = findNft(param(params, 'id'))
     const change = await parseBody(request, nftChangeSchema)
     const edition = findEdition(nft, change.editionId ?? nft.editions.find((e) => e.price === nft.price)?.id ?? nft.editions[0]!.id)
-    const previousPrice = nft.price
+    const before = snapshotNft(nft)
     if (change.price !== undefined) edition.price = change.price
     if (change.available !== undefined) edition.available = change.available
     touchNft(nft)
-    publishNftUpdated(nft, previousPrice)
+    publishNftUpdated(nft, before)
     return HttpResponse.json({ id: nft.id, version: nft.version, price: nft.price, available: nft.available })
   }),
 

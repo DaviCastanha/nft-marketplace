@@ -29,6 +29,17 @@ export const nftUpdatedEventSchema = envelope(
     editions: z.array(
       z.object({ id: z.string(), price: ethAmountSchema, available: z.number().int().min(0) }),
     ),
+    /** Editions whose price or stock changed in this update, with the previous values. */
+    changes: z.array(
+      z.object({
+        editionId: z.string(),
+        label: z.string(),
+        previousPrice: ethAmountSchema,
+        price: ethAmountSchema,
+        previousAvailable: z.number().int().min(0),
+        available: z.number().int().min(0),
+      }),
+    ),
   }),
 )
 export type NftUpdatedEvent = z.infer<typeof nftUpdatedEventSchema>

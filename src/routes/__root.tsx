@@ -3,6 +3,7 @@ import { HeadContent, Link, Outlet, createRootRouteWithContext, useLocation } fr
 import { MobileNav } from '@/app/layout/mobile-nav'
 import { SiteFooter } from '@/app/layout/site-footer'
 import { SiteHeader } from '@/app/layout/site-header'
+import { RealtimeBridge } from '@/app/realtime-bridge'
 import { SessionLifecycle } from '@/app/session-lifecycle'
 import { restoreSession } from '@/features/auth/restore-session'
 import { LiveAnnouncer } from '@/shared/a11y/live-announcer'
@@ -41,6 +42,7 @@ function RootLayout() {
       <Toaster position="top-center" richColors={false} closeButton />
       <LiveAnnouncer />
       <SessionLifecycle />
+      <RealtimeBridge />
     </>
   )
 }

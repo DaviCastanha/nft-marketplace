@@ -7,8 +7,32 @@ import { emitToClients } from '@/mocks/realtime/server'
 
 let lastNftEvent: NftUpdatedEvent | null = null
 
+export interface NftSnapshot {
+  price: string
+  editions: Array<{ id: string; price: string; available: number }>
+}
+
+/** Captures an NFT's commercial state before a mutation, so the event can describe what changed. */
+export function snapshotNft(nft: NftRecord): NftSnapshot {
+  return { price: nft.price, editions: nft.editions.map(({ id, price, available }) => ({ id, price, available })) }
+}
+
 /** Every catalog mutation goes through here, so REST state and realtime events never diverge. */
-export function publishNftUpdated(nft: NftRecord, previousPrice: string) {
+export function publishNftUpdated(nft: NftRecord, before: NftSnapshot) {
+  const changes = nft.editions.flatMap((edition) => {
+    const previous = before.editions.find((e) => e.id === edition.id)
+    if (!previous || (previous.price === edition.price && previous.available === edition.available)) return []
+    return [
+      {
+        editionId: edition.id,
+        label: edition.label,
+        previousPrice: previous.price,
+        price: edition.price,
+        previousAvailable: previous.available,
+        available: edition.available,
+      },
+    ]
+  })
   const event: NftUpdatedEvent = {
     eventId: randomId('evt'),
     type: 'nft.updated',
@@ -18,9 +42,10 @@ export function publishNftUpdated(nft: NftRecord, previousPrice: string) {
     payload: {
       name: nft.name,
       price: nft.price,
-      previousPrice,
+      previousPrice: before.price,
       available: nft.available,
       editions: nft.editions.map(({ id, price, available }) => ({ id, price, available })),
+      changes,
     },
   }
   lastNftEvent = event
@@ -50,7 +75,14 @@ export function replayLastNftEvent(mode: 'duplicate' | 'stale'): boolean {
           ...lastNftEvent,
           eventId: randomId('evt'),
           version: Math.max(1, lastNftEvent.version - 1),
-          payload: { ...lastNftEvent.payload, price: lastNftEvent.payload.previousPrice },
+          payload: {
+            ...lastNftEvent.payload,
+            price: lastNftEvent.payload.previousPrice,
+            editions: lastNftEvent.payload.editions.map((edition) => {
+              const change = lastNftEvent!.payload.changes.find((c) => c.editionId === edition.id)
+              return change ? { ...edition, price: change.previousPrice, available: change.previousAvailable } : edition
+            }),
+          },
         }
   emitToClients(event.type, event)
   return true
