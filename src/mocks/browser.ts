@@ -18,5 +18,7 @@ export async function startMockWorker() {
       if (new URL(request.url).pathname.startsWith(import.meta.env.VITE_API_URL)) print.warning()
     },
   })
+  // Lets automation wait until the mock layer (and the selected scenario) is active.
+  document.documentElement.dataset.mocks = 'ready'
   return worker
 }

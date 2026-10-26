@@ -81,6 +81,9 @@ export const checkoutHandlers = [
     if (!session || session.userId !== user.id || !session.active) {
       fail(409, 'WALLET_DISCONNECTED', 'Conecte sua carteira novamente para concluir a compra.')
     }
+    if (session.network !== quote.network) {
+      fail(409, 'CONFLICT', 'A rede da carteira conectada é diferente da rede da cotação. Revise o pedido.')
+    }
 
     // Revalidate price, stock, coupon and fees against the live catalog.
     const fresh = buildQuote(cartKey, quote.network)
