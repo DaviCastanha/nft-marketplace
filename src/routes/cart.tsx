@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { CartPage } from '@/features/cart/cart-page'
 
 export const Route = createFileRoute('/cart')({
-  component: () => <section className="page-container py-16">Em construção</section>,
+  head: () => ({ meta: [{ title: 'Carrinho — Kurio' }] }),
+  component: CartPage,
 })
