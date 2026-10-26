@@ -1,0 +1,118 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fontsource-variable/roboto-mono';
+
+/* Design tokens extracted from Figma (design/tokens.md). The layout is dark-only. */
+:root {
+  color-scheme: dark;
+
+  --ink: #140d0a;
+  --surface-card: #241612;
+  --surface-raised: #2f1d15;
+  --surface-dark: #38220f;
+  --border-strong: #3f2319;
+  --border-soft: #55321f;
+  --brand: #d28a4c;
+  --brand-amber: #e3a44e;
+  --text-accent: #e89b55;
+  --text-primary: #f5f1eb;
+  --text-secondary: #cfb28c;
+  --text-tertiary: #b39463;
+  --coral: #f0805f;
+  --success: #00a66c;
+  --error: #ed1b2e;
+
+  /* shadcn/ui semantic slots mapped onto the Figma palette. */
+  --background: var(--ink);
+  --foreground: var(--text-primary);
+  --card: var(--surface-card);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface-raised);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand);
+  --primary-foreground: var(--ink);
+  --secondary: var(--surface-raised);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--surface-card);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--surface-raised);
+  --accent-foreground: var(--text-accent);
+  --destructive: var(--coral);
+  --border: var(--border-strong);
+  --input: var(--border-soft);
+  --ring: var(--brand);
+  --radius: 6px;
+}
+
+@theme inline {
+  --font-sans: 'Roboto Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-mono: 'Roboto Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-ink: var(--ink);
+  --color-surface-card: var(--surface-card);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-dark: var(--surface-dark);
+  --color-border-soft: var(--border-soft);
+  --color-brand: var(--brand);
+  --color-brand-amber: var(--brand-amber);
+  --color-text-accent: var(--text-accent);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-coral: var(--coral);
+  --color-success: var(--success);
+  --color-error: var(--error);
+
+  --radius-sm: 3px;
+  --radius-md: var(--radius);
+  --radius-lg: 8px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+
+  --shadow-card: 0 0 20px 0 #0a060473;
+  --shadow-raised: 0 6px 20px 0 #0a060473;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    min-height: 100dvh;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .skip-link {
+    @apply bg-primary text-primary-foreground fixed top-2 left-2 z-[100] -translate-y-16 rounded-md px-4 py-2 font-bold transition-transform focus:translate-y-0 motion-reduce:transition-none;
+  }
+}
