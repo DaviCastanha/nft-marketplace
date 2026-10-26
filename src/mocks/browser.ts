@@ -1,9 +1,15 @@
 import { setupWorker } from 'msw/browser'
-import { systemHandlers } from '@/mocks/handlers/system'
-import { realtimeHandler } from '@/mocks/realtime/server'
+import { resumePendingOrders } from '@/mocks/domain/orders'
+import { initDb } from '@/mocks/db/store'
+import { handlers } from '@/mocks/handlers'
+import { initScenario } from '@/mocks/scenarios/state'
 
 export async function startMockWorker() {
-  const worker = setupWorker(...systemHandlers, realtimeHandler)
+  initDb()
+  initScenario()
+  resumePendingOrders()
+
+  const worker = setupWorker(...handlers)
   await worker.start({
     serviceWorker: { url: '/mockServiceWorker.js' },
     quiet: import.meta.env.PROD,
