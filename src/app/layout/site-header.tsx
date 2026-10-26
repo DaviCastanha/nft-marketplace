@@ -11,6 +11,8 @@ import { notifyUnavailable } from '@/shared/lib/unavailable'
 import { useCurrentUser } from '@/shared/session/session-store'
 
 const MARKET_PATHS = ['/nfts', '/cart', '/checkout', '/orders']
+/** The Figma purchase-flow frames use the header without the bottom divider. */
+const NO_DIVIDER_PATHS = ['/nfts', '/cart', '/checkout']
 
 function NavItem({ active, children }: { active: boolean; children: React.ReactNode }) {
   return (
@@ -36,7 +38,12 @@ export function SiteHeader() {
 
   return (
     <header className="page-container hidden pt-6 lg:block">
-      <div className="relative flex h-[45px] items-start justify-between border-b-[0.5px] border-primary/70">
+      <div
+        className={cn(
+          'relative flex h-[45px] items-start justify-between border-b-[0.5px]',
+          NO_DIVIDER_PATHS.some((p) => pathname.startsWith(p)) ? 'border-transparent' : 'border-primary/70',
+        )}
+      >
         <Link to="/" className="mt-2 w-40 text-sm leading-[18px] font-bold tracking-[1.4px]" aria-label="Kurio, página inicial">
           KURIO
         </Link>

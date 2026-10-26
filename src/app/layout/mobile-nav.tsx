@@ -79,7 +79,7 @@ export function MobileTopBar({ title, action }: { title?: string; action?: React
           <path d="M19.92 22.83s-5.84-3.45-5.84-5.83c0-2.38 5.84-5.83 5.84-5.83" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      {title && <h1 className="flex-1 text-center text-xl leading-6 font-bold">{title}</h1>}
+      {title ? <h1 className="flex-1 text-center text-xl leading-6 font-bold">{title}</h1> : <span className="flex-1" />}
       <div className="flex min-w-[35px] justify-end">{action}</div>
     </div>
   )

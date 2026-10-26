@@ -2,6 +2,10 @@
 @import 'tw-animate-css';
 @import '@fontsource-variable/roboto-mono';
 
+/* The layout is dark-only: `dark:` follows the fixed `.dark` class on <html>, never the OS setting,
+   so rendering is identical for every visitor, screenshot baseline and audit. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Design tokens extracted from Figma (design/tokens.md). The layout is dark-only. */
 :root {
   color-scheme: dark;

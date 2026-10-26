@@ -27,12 +27,13 @@ export function useAddToCart() {
   )
   return {
     ...mutation,
-    add: (input: AddCartItemInput & { name: string; editionLabel: string }) =>
+    add: (input: AddCartItemInput & { name: string; editionLabel: string }, options: { onSuccess?: () => void } = {}) =>
       mutation.mutate(input, {
         onSuccess: () => {
           const message = `${input.name} (edição ${input.editionLabel}) adicionado ao carrinho.`
           toast.success(message)
           announce(message)
+          options.onSuccess?.()
         },
         onError: (error) => {
           toast.error(error.message)
