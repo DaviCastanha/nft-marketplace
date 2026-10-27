@@ -7,7 +7,7 @@ import { settleOrder } from '@/mocks/domain/orders'
 import { db, resetDb } from '@/mocks/db/store'
 import { fail, noContent, parseBody } from '@/mocks/lib/http'
 import { control, param } from '@/mocks/lib/route'
-import { disconnectAllClients } from '@/mocks/realtime/server'
+import { disconnectAllClients, setDeliveryPaused } from '@/mocks/realtime/server'
 import { SCENARIOS } from '@/mocks/scenarios/definitions'
 import { currentScenario, resetNetworkState, setScenario } from '@/mocks/scenarios/state'
 
@@ -70,6 +70,12 @@ export const controlHandlers = [
 
   control('post', '/socket/disconnect', () => {
     disconnectAllClients()
+    return noContent()
+  }),
+
+  control('post', '/socket/pause', async ({ request }) => {
+    const { paused } = await parseBody(request, z.object({ paused: z.boolean() }))
+    setDeliveryPaused(paused)
     return noContent()
   }),
 

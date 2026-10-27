@@ -48,8 +48,15 @@ export const realtimeHandler = realtimeLink.addEventListener('connection', (conn
   })
 })
 
+/** When paused, events are dropped as if lost in transit (test/demo hook for a lagging socket). */
+let deliveryPaused = false
+export function setDeliveryPaused(paused: boolean) {
+  deliveryPaused = paused
+}
+
 /** Emits an event to every connected client accepted by the filter. */
 export function emitToClients(event: string, payload: unknown, filter: (token: string | null) => boolean = () => true) {
+  if (deliveryPaused) return
   for (const client of clients) {
     if (filter(client.token)) client.io.client.emit(event, payload)
   }

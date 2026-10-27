@@ -48,6 +48,11 @@ export class MockControl {
     return this.call('POST', '/socket/disconnect')
   }
 
+  /** Drops realtime events in transit (the client keeps a connected but lagging socket). */
+  pauseEvents(paused: boolean) {
+    return this.call('POST', '/socket/pause', { paused })
+  }
+
   resolveOrder(orderId: string, status: 'confirmed' | 'rejected') {
     return this.call('POST', `/orders/${orderId}/resolve`, { status })
   }

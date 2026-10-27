@@ -88,7 +88,11 @@ export function createDispatcher(queryClient: QueryClient, sessionUserId: string
     void queryClient.invalidateQueries({ predicate: (q) => q.queryKey.includes('cart') || q.queryKey.includes('quote') })
 
     const message = describeNftChange(event)
-    if (inCart) toast.info(message, { id: `nft-${nftId}` })
+    // Interrupt (toast) only for what affects a purchase decision in the cart: a new price or a
+    // sold-out edition. Plain stock movements (e.g. the user's own order reserving units) are
+    // still announced politely.
+    const decisive = event.payload.changes.some((c) => c.price !== c.previousPrice || (c.available === 0 && c.previousAvailable > 0))
+    if (inCart && decisive) toast.info(message, { id: `nft-${nftId}` })
     announce(message)
   }
 

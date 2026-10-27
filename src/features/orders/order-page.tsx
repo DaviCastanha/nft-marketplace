@@ -51,7 +51,7 @@ function Receipt({ order }: { order: Order }) {
         </Link>
       </header>
 
-      <dl className="grid grid-cols-2 border-y border-primary px-6 py-4 text-[15px] leading-5 sm:grid-cols-4 sm:divide-x sm:divide-primary">
+      <dl className="grid grid-cols-2 border-y border-primary px-6 py-4 text-sm leading-5 whitespace-nowrap sm:grid-cols-4 sm:divide-x sm:divide-primary sm:px-9">
         <div className="flex flex-col pr-3">
           <dt className="font-bold text-text-secondary">ID da transação</dt>
           <dd className="font-mono" title={order.transactionHash ?? ''}>

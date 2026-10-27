@@ -40,14 +40,14 @@ test.describe('tempo real durante a compra', () => {
     await gotoApp(page, '/cart')
     const dialog = await openReview(page)
 
-    // Block the socket frames so the client cannot learn about the change in advance.
-    await page.routeWebSocket(/socket\.io/, () => undefined).catch(() => undefined)
-    await mock.dropSocket()
+    // The event is lost in transit, so only the API's revalidation can catch the change.
+    await mock.pauseEvents(true)
     await mock.updateNft('golden-beat-207', { editionId: '1-50', price: '1.25' })
     await dialog.getByRole('button', { name: 'Confirmar e pagar' }).click()
 
     await expect(dialog.getByRole('alert').filter({ hasText: 'Preços ou condições mudaram' })).toBeVisible()
     await expect(dialog.getByText('Golden Beat #207: preço de 0.99 ETH para 1.25 ETH.')).toBeVisible()
+    await mock.pauseEvents(false)
     await dialog.getByRole('button', { name: 'Revisei os novos valores' }).click()
     await dialog.getByRole('button', { name: 'Confirmar e pagar' }).click()
     await expect(receiptHeading(page)).toBeVisible({ timeout: 10_000 })
