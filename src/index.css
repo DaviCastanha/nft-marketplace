@@ -1,6 +1,27 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import '@fontsource-variable/roboto-mono';
+
+/* Roboto Mono (OFL, from @fontsource-variable/roboto-mono): only the latin subset the UI uses,
+   served from a stable URL so index.html can preload it. */
+@font-face {
+  font-family: 'Roboto Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 700;
+  src: url('/fonts/roboto-mono-latin-wght.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Metric-compatible fallback (same 0.6em advance, Roboto Mono's vertical metrics), so the
+   swap to the web font does not reflow text and shift the layout (CLS). */
+@font-face {
+  font-family: 'Roboto Mono Fallback';
+  src: local('Courier New'), local('Courier'), local('Liberation Mono');
+  ascent-override: 104.8%;
+  descent-override: 27.1%;
+  line-gap-override: 0%;
+  size-adjust: 100%;
+}
 
 /* The layout is dark-only: `dark:` follows the fixed `.dark` class on <html>, never the OS setting,
    so rendering is identical for every visitor, screenshot baseline and audit. */
@@ -49,8 +70,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Roboto Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --font-mono: 'Roboto Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: 'Roboto Mono Variable', 'Roboto Mono Fallback', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-mono: 'Roboto Mono Variable', 'Roboto Mono Fallback', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -1,5 +1,6 @@
 import axios, { type InternalAxiosRequestConfig } from 'axios'
 import { ApiError, toApiError } from '@/shared/api/errors'
+import { networkReady } from '@/shared/api/network-ready'
 import { getCartId } from '@/shared/lib/cart-id'
 import { sessionStore } from '@/shared/session/session-store'
 
@@ -14,7 +15,8 @@ export const http = axios.create({
   paramsSerializer: { indexes: null },
 })
 
-http.interceptors.request.use((config: TimedConfig) => {
+http.interceptors.request.use(async (config: TimedConfig) => {
+  await networkReady
   const token = sessionStore.token()
   if (token) config.headers.set('Authorization', `Bearer ${token}`)
   config.headers.set('X-Cart-Id', getCartId())

@@ -34,7 +34,10 @@ function RootLayout() {
         Pular para o conteúdo
       </a>
       <SiteHeader />
-      <main id="main" tabIndex={-1} className={cn('outline-none', !focused && 'pb-28 lg:pb-0')}>
+      {/* Desktop: at least one viewport tall, so the footer never starts on screen and content
+          arriving after a skeleton cannot push it down (no layout shift). On phones the footer
+          only exists on the home page, below the catalog. */}
+      <main id="main" tabIndex={-1} className={cn('outline-none lg:min-h-dvh', !focused && 'pb-28 lg:pb-0')}>
         <Outlet />
       </main>
       <SiteFooter className={cn(pathname !== '/' && 'hidden lg:block')} />

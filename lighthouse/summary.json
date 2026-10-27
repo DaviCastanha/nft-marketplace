@@ -1,0 +1,434 @@
+{
+  "environment": {
+    "lighthouse": "13.5.0",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "benchmarkIndex": 1954.5,
+    "node": "v22.14.0",
+    "os": "Windows_NT 10.0.26200 (x64)",
+    "cpu": "Intel(R) Core(TM) i5-9300HF CPU @ 2.40GHz",
+    "cores": 8,
+    "memoryGb": 16,
+    "date": "2026-10-27T00:55:41.725Z",
+    "baseUrl": "http://localhost:4173",
+    "runs": 3,
+    "scenario": "default (MSW)"
+  },
+  "results": [
+    {
+      "page": "inicio",
+      "pageLabel": "Início",
+      "profile": "mobile",
+      "profileLabel": "Mobile",
+      "formFactor": "mobile",
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "runs": [
+        {
+          "scores": {
+            "performance": 74,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 4974.460725,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 153,
+            "first-contentful-paint": 2960.8071499999996,
+            "speed-index": 2960.8071499999996
+          },
+          "throttling": {
+            "rttMs": 150,
+            "throughputKbps": 1638.4,
+            "requestLatencyMs": 562.5,
+            "downloadThroughputKbps": 1474.5600000000002,
+            "uploadThroughputKbps": 675,
+            "cpuSlowdownMultiplier": 4
+          },
+          "formFactor": "mobile"
+        },
+        {
+          "scores": {
+            "performance": 74,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 5004.5414,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 195.49999999999977,
+            "first-contentful-paint": 2910.65605,
+            "speed-index": 2910.65605
+          },
+          "throttling": {
+            "rttMs": 150,
+            "throughputKbps": 1638.4,
+            "requestLatencyMs": 562.5,
+            "downloadThroughputKbps": 1474.5600000000002,
+            "uploadThroughputKbps": 675,
+            "cpuSlowdownMultiplier": 4
+          },
+          "formFactor": "mobile"
+        },
+        {
+          "scores": {
+            "performance": 76,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 4986.778999999999,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 123.5,
+            "first-contentful-paint": 2911.9592500000003,
+            "speed-index": 2911.9592500000003
+          },
+          "throttling": {
+            "rttMs": 150,
+            "throughputKbps": 1638.4,
+            "requestLatencyMs": 562.5,
+            "downloadThroughputKbps": 1474.5600000000002,
+            "uploadThroughputKbps": 675,
+            "cpuSlowdownMultiplier": 4
+          },
+          "formFactor": "mobile"
+        }
+      ],
+      "median": {
+        "scores": {
+          "performance": 74,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "metrics": {
+          "largest-contentful-paint": 4986.778999999999,
+          "cumulative-layout-shift": 0,
+          "total-blocking-time": 153,
+          "first-contentful-paint": 2911.9592500000003,
+          "speed-index": 2911.9592500000003
+        }
+      }
+    },
+    {
+      "page": "inicio",
+      "pageLabel": "Início",
+      "profile": "desktop",
+      "profileLabel": "Desktop",
+      "formFactor": "desktop",
+      "throttling": {
+        "rttMs": 40,
+        "throughputKbps": 10240,
+        "requestLatencyMs": 0,
+        "downloadThroughputKbps": 0,
+        "uploadThroughputKbps": 0,
+        "cpuSlowdownMultiplier": 1
+      },
+      "runs": [
+        {
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 976.6154,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 0,
+            "first-contentful-paint": 618.96155,
+            "speed-index": 636.9524415879957
+          },
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "formFactor": "desktop"
+        },
+        {
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 975.9322000000002,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 0,
+            "first-contentful-paint": 618.4491500000001,
+            "speed-index": 626.8948951382692
+          },
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "formFactor": "desktop"
+        },
+        {
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 966.3371999999999,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 0,
+            "first-contentful-paint": 611.0029,
+            "speed-index": 618.2666977283412
+          },
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "formFactor": "desktop"
+        }
+      ],
+      "median": {
+        "scores": {
+          "performance": 99,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "metrics": {
+          "largest-contentful-paint": 975.9322000000002,
+          "cumulative-layout-shift": 0,
+          "total-blocking-time": 0,
+          "first-contentful-paint": 618.4491500000001,
+          "speed-index": 626.8948951382692
+        }
+      }
+    },
+    {
+      "page": "detalhe",
+      "pageLabel": "Detalhe do NFT",
+      "profile": "mobile",
+      "profileLabel": "Mobile",
+      "formFactor": "mobile",
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "runs": [
+        {
+          "scores": {
+            "performance": 78,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 4527.726800000001,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 111.5,
+            "first-contentful-paint": 2912.2951000000003,
+            "speed-index": 2912.2951000000003
+          },
+          "throttling": {
+            "rttMs": 150,
+            "throughputKbps": 1638.4,
+            "requestLatencyMs": 562.5,
+            "downloadThroughputKbps": 1474.5600000000002,
+            "uploadThroughputKbps": 675,
+            "cpuSlowdownMultiplier": 4
+          },
+          "formFactor": "mobile"
+        },
+        {
+          "scores": {
+            "performance": 79,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 4418.509400000001,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 105,
+            "first-contentful-paint": 2954.63205,
+            "speed-index": 2954.63205
+          },
+          "throttling": {
+            "rttMs": 150,
+            "throughputKbps": 1638.4,
+            "requestLatencyMs": 562.5,
+            "downloadThroughputKbps": 1474.5600000000002,
+            "uploadThroughputKbps": 675,
+            "cpuSlowdownMultiplier": 4
+          },
+          "formFactor": "mobile"
+        },
+        {
+          "scores": {
+            "performance": 78,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 4511.6996,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 112.5,
+            "first-contentful-paint": 2912.0247,
+            "speed-index": 2912.0247
+          },
+          "throttling": {
+            "rttMs": 150,
+            "throughputKbps": 1638.4,
+            "requestLatencyMs": 562.5,
+            "downloadThroughputKbps": 1474.5600000000002,
+            "uploadThroughputKbps": 675,
+            "cpuSlowdownMultiplier": 4
+          },
+          "formFactor": "mobile"
+        }
+      ],
+      "median": {
+        "scores": {
+          "performance": 78,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "metrics": {
+          "largest-contentful-paint": 4511.6996,
+          "cumulative-layout-shift": 0,
+          "total-blocking-time": 111.5,
+          "first-contentful-paint": 2912.2951000000003,
+          "speed-index": 2912.2951000000003
+        }
+      }
+    },
+    {
+      "page": "detalhe",
+      "pageLabel": "Detalhe do NFT",
+      "profile": "desktop",
+      "profileLabel": "Desktop",
+      "formFactor": "desktop",
+      "throttling": {
+        "rttMs": 40,
+        "throughputKbps": 10240,
+        "requestLatencyMs": 0,
+        "downloadThroughputKbps": 0,
+        "uploadThroughputKbps": 0,
+        "cpuSlowdownMultiplier": 1
+      },
+      "runs": [
+        {
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 957.5796,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 0,
+            "first-contentful-paint": 589.48725,
+            "speed-index": 589.48725
+          },
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "formFactor": "desktop"
+        },
+        {
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 951.2552000000001,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 0,
+            "first-contentful-paint": 586.2845000000001,
+            "speed-index": 586.2845000000001
+          },
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "formFactor": "desktop"
+        },
+        {
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 957.1293999999997,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 0,
+            "first-contentful-paint": 591.0808749999999,
+            "speed-index": 591.0808749999999
+          },
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "formFactor": "desktop"
+        }
+      ],
+      "median": {
+        "scores": {
+          "performance": 99,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "metrics": {
+          "largest-contentful-paint": 957.1293999999997,
+          "cumulative-layout-shift": 0,
+          "total-blocking-time": 0,
+          "first-contentful-paint": 589.48725,
+          "speed-index": 589.48725
+        }
+      }
+    }
+  ]
+}

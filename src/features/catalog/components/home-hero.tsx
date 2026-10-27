@@ -101,6 +101,9 @@ export function HomeHero() {
           <Link to="/nfts/$nftId" params={{ nftId: slide.nftId }} className="relative w-[138px] shrink-0" aria-label={`Ver ${slide.alt.split(':')[0]}`}>
             <img
               src={`/nfts/${slide.artwork}-320.webp`}
+              srcSet={srcSet(slide.artwork)}
+              // Same candidates/sizes as the preload in index.html, so the preloaded file is reused.
+              sizes="138px"
               width={138}
               height={138}
               alt=""

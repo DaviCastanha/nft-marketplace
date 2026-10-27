@@ -3,10 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Discover, collect and buy unique NFTs. Browse the catalog, filter by category and network, and check out with your wallet." />
-    <meta name="theme-color" content="#2b2b2b" />
+    <title>Kurio — Marketplace de NFTs</title>
+    <meta
+      name="description"
+      content="Descubra, colecione e compre NFTs selecionados de criadores emergentes e consagrados. Filtre por coleção e rede e finalize com sua carteira."
+    />
+    <meta name="theme-color" content="#140d0a" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>NFT Marketplace</title>
+    <!-- Critical resources start before the JS chain (bundle → mock worker → app).
+         The image matches the LCP element: the 450px hero on desktop, the first catalog card (50vw) on phones. -->
+    <link rel="preload" href="/fonts/roboto-mono-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      as="image"
+      href="/nfts/emerald-640.webp"
+      imagesrcset="/nfts/emerald-160.webp 160w, /nfts/emerald-320.webp 320w, /nfts/emerald-640.webp 640w, /nfts/emerald-960.webp 960w"
+      imagesizes="(min-width: 1024px) 450px, 50vw"
+      fetchpriority="high"
+    />
   </head>
   <body>
     <div id="root"></div>
