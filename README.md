@@ -26,7 +26,7 @@ Solução do desafio Frontend da Jungle Gaming: marketplace de NFTs em **React +
 
 ## Como executar
 
-Requisitos: **Node 22+** e npm.
+Requisitos: **Node 22.19+** (o Lighthouse 13 exige essa versão; app e testes rodam em qualquer Node 22) e npm.
 
 ```bash
 npm ci
