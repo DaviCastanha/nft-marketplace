@@ -2,13 +2,13 @@
   "environment": {
     "lighthouse": "13.5.0",
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
-    "benchmarkIndex": 1954.5,
+    "benchmarkIndex": 1803.5,
     "node": "v22.14.0",
     "os": "Windows_NT 10.0.26200 (x64)",
     "cpu": "Intel(R) Core(TM) i5-9300HF CPU @ 2.40GHz",
     "cores": 8,
     "memoryGb": 16,
-    "date": "2026-10-27T00:55:41.725Z",
+    "date": "2026-10-27T02:42:22.374Z",
     "baseUrl": "http://localhost:4173",
     "runs": 3,
     "scenario": "default (MSW)"
@@ -31,17 +31,17 @@
       "runs": [
         {
           "scores": {
-            "performance": 74,
+            "performance": 72,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 4974.460725,
+            "largest-contentful-paint": 5016.485175,
             "cumulative-layout-shift": 0,
-            "total-blocking-time": 153,
-            "first-contentful-paint": 2960.8071499999996,
-            "speed-index": 2960.8071499999996
+            "total-blocking-time": 228.49999999999977,
+            "first-contentful-paint": 2993.8234500000003,
+            "speed-index": 2993.8234500000003
           },
           "throttling": {
             "rttMs": 150,
@@ -55,17 +55,17 @@
         },
         {
           "scores": {
-            "performance": 74,
+            "performance": 62,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 5004.5414,
+            "largest-contentful-paint": 5077.444,
             "cumulative-layout-shift": 0,
-            "total-blocking-time": 195.49999999999977,
-            "first-contentful-paint": 2910.65605,
-            "speed-index": 2910.65605
+            "total-blocking-time": 521.2160000000003,
+            "first-contentful-paint": 3002.7959999999994,
+            "speed-index": 3145.0885752188015
           },
           "throttling": {
             "rttMs": 150,
@@ -79,17 +79,17 @@
         },
         {
           "scores": {
-            "performance": 76,
+            "performance": 73,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 4986.778999999999,
+            "largest-contentful-paint": 5014.996425000001,
             "cumulative-layout-shift": 0,
-            "total-blocking-time": 123.5,
-            "first-contentful-paint": 2911.9592500000003,
-            "speed-index": 2911.9592500000003
+            "total-blocking-time": 207.99999999999932,
+            "first-contentful-paint": 2991.3309500000005,
+            "speed-index": 2991.3309500000005
           },
           "throttling": {
             "rttMs": 150,
@@ -104,17 +104,17 @@
       ],
       "median": {
         "scores": {
-          "performance": 74,
+          "performance": 72,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100
         },
         "metrics": {
-          "largest-contentful-paint": 4986.778999999999,
+          "largest-contentful-paint": 5016.485175,
           "cumulative-layout-shift": 0,
-          "total-blocking-time": 153,
-          "first-contentful-paint": 2911.9592500000003,
-          "speed-index": 2911.9592500000003
+          "total-blocking-time": 228.49999999999977,
+          "first-contentful-paint": 2993.8234500000003,
+          "speed-index": 2993.8234500000003
         }
       }
     },
@@ -135,17 +135,41 @@
       "runs": [
         {
           "scores": {
-            "performance": 99,
+            "performance": 98,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 976.6154,
+            "largest-contentful-paint": 1030.24735,
             "cumulative-layout-shift": 0,
-            "total-blocking-time": 0,
-            "first-contentful-paint": 618.96155,
-            "speed-index": 636.9524415879957
+            "total-blocking-time": 32.49999999999994,
+            "first-contentful-paint": 716.6649,
+            "speed-index": 880.5841605402375
+          },
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "formFactor": "desktop"
+        },
+        {
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "metrics": {
+            "largest-contentful-paint": 1025.1423499999999,
+            "cumulative-layout-shift": 0,
+            "total-blocking-time": 27.500000000000057,
+            "first-contentful-paint": 704.5949,
+            "speed-index": 852.7014595044272
           },
           "throttling": {
             "rttMs": 40,
@@ -165,35 +189,11 @@
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 975.9322000000002,
+            "largest-contentful-paint": 981.9099249999999,
             "cumulative-layout-shift": 0,
-            "total-blocking-time": 0,
-            "first-contentful-paint": 618.4491500000001,
-            "speed-index": 626.8948951382692
-          },
-          "throttling": {
-            "rttMs": 40,
-            "throughputKbps": 10240,
-            "requestLatencyMs": 0,
-            "downloadThroughputKbps": 0,
-            "uploadThroughputKbps": 0,
-            "cpuSlowdownMultiplier": 1
-          },
-          "formFactor": "desktop"
-        },
-        {
-          "scores": {
-            "performance": 99,
-            "accessibility": 100,
-            "best-practices": 100,
-            "seo": 100
-          },
-          "metrics": {
-            "largest-contentful-paint": 966.3371999999999,
-            "cumulative-layout-shift": 0,
-            "total-blocking-time": 0,
-            "first-contentful-paint": 611.0029,
-            "speed-index": 618.2666977283412
+            "total-blocking-time": 4,
+            "first-contentful-paint": 653.93995,
+            "speed-index": 712.2432254444484
           },
           "throttling": {
             "rttMs": 40,
@@ -208,17 +208,17 @@
       ],
       "median": {
         "scores": {
-          "performance": 99,
+          "performance": 98,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100
         },
         "metrics": {
-          "largest-contentful-paint": 975.9322000000002,
+          "largest-contentful-paint": 1025.1423499999999,
           "cumulative-layout-shift": 0,
-          "total-blocking-time": 0,
-          "first-contentful-paint": 618.4491500000001,
-          "speed-index": 626.8948951382692
+          "total-blocking-time": 27.500000000000057,
+          "first-contentful-paint": 704.5949,
+          "speed-index": 852.7014595044272
         }
       }
     },
@@ -239,17 +239,17 @@
       "runs": [
         {
           "scores": {
-            "performance": 78,
+            "performance": 77,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 4527.726800000001,
+            "largest-contentful-paint": 4461.3947,
             "cumulative-layout-shift": 0,
-            "total-blocking-time": 111.5,
-            "first-contentful-paint": 2912.2951000000003,
-            "speed-index": 2912.2951000000003
+            "total-blocking-time": 154,
+            "first-contentful-paint": 2981.9298,
+            "speed-index": 2981.9298
           },
           "throttling": {
             "rttMs": 150,
@@ -263,17 +263,17 @@
         },
         {
           "scores": {
-            "performance": 79,
+            "performance": 61,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 4418.509400000001,
+            "largest-contentful-paint": 4698.977725,
             "cumulative-layout-shift": 0,
-            "total-blocking-time": 105,
-            "first-contentful-paint": 2954.63205,
-            "speed-index": 2954.63205
+            "total-blocking-time": 647,
+            "first-contentful-paint": 3072.48515,
+            "speed-index": 3072.48515
           },
           "throttling": {
             "rttMs": 150,
@@ -287,17 +287,17 @@
         },
         {
           "scores": {
-            "performance": 78,
+            "performance": 76,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 4511.6996,
+            "largest-contentful-paint": 4465.208225000001,
             "cumulative-layout-shift": 0,
-            "total-blocking-time": 112.5,
-            "first-contentful-paint": 2912.0247,
-            "speed-index": 2912.0247
+            "total-blocking-time": 187,
+            "first-contentful-paint": 2982.4721500000005,
+            "speed-index": 2982.4721500000005
           },
           "throttling": {
             "rttMs": 150,
@@ -312,17 +312,17 @@
       ],
       "median": {
         "scores": {
-          "performance": 78,
+          "performance": 76,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100
         },
         "metrics": {
-          "largest-contentful-paint": 4511.6996,
+          "largest-contentful-paint": 4465.208225000001,
           "cumulative-layout-shift": 0,
-          "total-blocking-time": 111.5,
-          "first-contentful-paint": 2912.2951000000003,
-          "speed-index": 2912.2951000000003
+          "total-blocking-time": 187,
+          "first-contentful-paint": 2982.4721500000005,
+          "speed-index": 2982.4721500000005
         }
       }
     },
@@ -349,11 +349,11 @@
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 957.5796,
+            "largest-contentful-paint": 939.61915,
             "cumulative-layout-shift": 0,
             "total-blocking-time": 0,
-            "first-contentful-paint": 589.48725,
-            "speed-index": 589.48725
+            "first-contentful-paint": 608.6217499999999,
+            "speed-index": 608.6217499999999
           },
           "throttling": {
             "rttMs": 40,
@@ -373,11 +373,11 @@
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 951.2552000000001,
+            "largest-contentful-paint": 945.8001499999999,
             "cumulative-layout-shift": 0,
             "total-blocking-time": 0,
-            "first-contentful-paint": 586.2845000000001,
-            "speed-index": 586.2845000000001
+            "first-contentful-paint": 609.6667500000001,
+            "speed-index": 609.6667500000001
           },
           "throttling": {
             "rttMs": 40,
@@ -397,11 +397,11 @@
             "seo": 100
           },
           "metrics": {
-            "largest-contentful-paint": 957.1293999999997,
+            "largest-contentful-paint": 966.820225,
             "cumulative-layout-shift": 0,
             "total-blocking-time": 0,
-            "first-contentful-paint": 591.0808749999999,
-            "speed-index": 591.0808749999999
+            "first-contentful-paint": 621.9001249999999,
+            "speed-index": 621.9001249999999
           },
           "throttling": {
             "rttMs": 40,
@@ -422,11 +422,11 @@
           "seo": 100
         },
         "metrics": {
-          "largest-contentful-paint": 957.1293999999997,
+          "largest-contentful-paint": 945.8001499999999,
           "cumulative-layout-shift": 0,
           "total-blocking-time": 0,
-          "first-contentful-paint": 589.48725,
-          "speed-index": 589.48725
+          "first-contentful-paint": 609.6667500000001,
+          "speed-index": 609.6667500000001
         }
       }
     }

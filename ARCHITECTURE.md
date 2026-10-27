@@ -198,12 +198,14 @@ Medianas de 3 execuções por página e perfil, no build de demonstração (bund
 
 | Página | Perfil | Performance | Accessibility | Best Practices | SEO | LCP | CLS | TBT |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Início | Mobile | 74 | 100 | 100 | 100 | 4,99 s | 0 | 153 ms |
-| Início | Desktop | 99 | 100 | 100 | 100 | 0,98 s | 0 | 0 ms |
-| Detalhe | Mobile | 78 | 100 | 100 | 100 | 4,51 s | 0 | 112 ms |
-| Detalhe | Desktop | 99 | 100 | 100 | 100 | 0,96 s | 0 | 0 ms |
+| Início | Mobile | 72 | 100 | 100 | 100 | 5,02 s | 0 | 228 ms |
+| Início | Desktop | 98 | 100 | 100 | 100 | 1,03 s | 0 | 28 ms |
+| Detalhe | Mobile | 76 | 100 | 100 | 100 | 4,47 s | 0 | 187 ms |
+| Detalhe | Desktop | 99 | 100 | 100 | 100 | 0,95 s | 0 | 0 ms |
 
-**Abaixo da meta: Performance mobile (74 e 78, meta ≥ 90).** A causa é o LCP. No perfil mobile (CPU 4× mais lenta, rede 4G lenta simulada), o elemento LCP é a primeira arte do catálogo ou do detalhe, que depende de dados da API. Na demo, a API é o MSW, que precisa estar ativo antes de qualquer requisição. A cadeia crítica é: entrada → runtime do MSW (≈175 KB gzip; ≈0,7 s de avaliação de script no perfil mobile) → registro do service worker → requisição → render → imagem. A imagem em si já chega pré-carregada (atraso de carregamento ≈ 10 ms); o que pesa é a espera pela camada simulada, e esse custo não existiria com um backend real (o build `production` não contém o MSW).
+Entre rodadas completas, a performance mobile variou ±2 a 3 pontos (ex.: 74/78 numa rodada anterior).
+
+**Abaixo da meta: Performance mobile (72 e 76, meta ≥ 90).** A causa é o LCP. No perfil mobile (CPU 4× mais lenta, rede 4G lenta simulada), o elemento LCP é a primeira arte do catálogo ou do detalhe, que depende de dados da API. Na demo, a API é o MSW, que precisa estar ativo antes de qualquer requisição. A cadeia crítica é: entrada → runtime do MSW (≈175 KB gzip; ≈0,7 s de avaliação de script no perfil mobile) → registro do service worker → requisição → render → imagem. A imagem em si já chega pré-carregada (atraso de carregamento ≈ 10 ms); o que pesa é a espera pela camada simulada, e esse custo não existiria com um backend real (o build `production` não contém o MSW).
 
 Otimizações feitas e mantidas por medição:
 
