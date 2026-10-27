@@ -83,7 +83,9 @@ function AvatarField({ user }: { user: User }) {
         {user.avatarUrl ? (
           <img src={user.avatarUrl} alt="Seu avatar atual" className="size-[50px] rounded-full object-cover" />
         ) : (
-          <ImagePlaceholderIcon className="size-[50px]" role="img" aria-label="Sem avatar" />
+          <span role="img" aria-label="Sem avatar">
+            <ImagePlaceholderIcon className="size-[50px]" />
+          </span>
         )}
         <input
           ref={fileInput}
