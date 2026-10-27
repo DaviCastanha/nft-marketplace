@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 test('home renders the catalog from the mocked API', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('link', { name: 'Emerald Ape #042' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Emerald Ape #042', exact: true })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'Paginação do catálogo' })).toBeVisible()
 })
 

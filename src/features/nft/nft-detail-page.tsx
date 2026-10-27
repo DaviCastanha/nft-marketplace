@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/shared/
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ui/tabs'
 import { NETWORK_LABELS } from '@/shared/contracts/common'
-import type { Edition, NftDetail } from '@/shared/contracts/nft'
+import type { Edition, NftDetail, NftSummary } from '@/shared/contracts/nft'
 import { formatEth } from '@/shared/lib/money'
 import { cn } from '@/shared/lib/utils'
 
@@ -162,14 +162,8 @@ function NftNotFound() {
 
 export function NftDetailPage() {
   const { nftId } = route.useParams()
-  const navigate = useNavigate()
   const detail = useQuery(catalogQueries.detail(nftId))
   const related = useQuery(catalogQueries.related(nftId))
-  const favorites = useFavoriteIds()
-  const toggleFavorite = useToggleFavorite()
-  const addToCart = useAddToCart()
-  const [editionId, setEditionId] = useState<string | null>(null)
-  const [quantity, setQuantity] = useState(1)
 
   if (detail.isPending) return <DetailSkeleton />
   if (detail.error?.code === 'NOT_FOUND') return <NftNotFound />
@@ -185,14 +179,24 @@ export function NftDetailPage() {
     )
   }
 
-  const nft = detail.data
-  const edition = nft.editions.find((e) => e.id === editionId) ?? defaultEdition(nft.editions)
+  // Keyed by NFT: the initial edition is chosen once per NFT, never re-derived from live updates.
+  return <NftDetailView key={detail.data.id} nft={detail.data} relatedItems={related.data?.items} relatedPending={related.isPending} />
+}
+
+function NftDetailView({ nft, relatedItems, relatedPending }: { nft: NftDetail; relatedItems: NftSummary[] | undefined; relatedPending: boolean }) {
+  const navigate = useNavigate()
+  const favorites = useFavoriteIds()
+  const toggleFavorite = useToggleFavorite()
+  const addToCart = useAddToCart()
+  const [editionId, setEditionId] = useState(() => defaultEdition(nft.editions).id)
+  const [quantity, setQuantity] = useState(1)
+
+  const edition = nft.editions.find((e) => e.id === editionId) ?? nft.editions[0]!
   const maxQuantity = Math.min(edition.available, edition.maxPerOrder)
   // Realtime stock changes can shrink the limit below the chosen quantity.
   const effectiveQuantity = Math.max(1, Math.min(quantity, maxQuantity))
   const unavailable = maxQuantity === 0
   const isFavorite = favorites.has(nft.id)
-  const favoriteLabel = isFavorite ? 'Remover dos favoritos' : 'Favoritar'
 
   const add = (thenGoToCart: boolean) =>
     addToCart.add(
@@ -209,7 +213,7 @@ export function NftDetailPage() {
           <button
             type="button"
             onClick={() => toggleFavorite(nft, !isFavorite)}
-            aria-label={`${favoriteLabel}: ${nft.name}`}
+            aria-label={`Favoritar ${nft.name}`}
             aria-pressed={isFavorite}
             className="grid size-[35px] place-items-center rounded-full border border-border bg-surface-raised"
           >
@@ -274,7 +278,7 @@ export function NftDetailPage() {
                 </Button>
                 <Button type="button" variant="outline" className="w-[130px] gap-2 rounded-md font-medium" onClick={() => toggleFavorite(nft, !isFavorite)} aria-pressed={isFavorite}>
                   {isFavorite ? <HeartFilledIcon className="size-5 text-primary" /> : <HeartOutlineIcon className="size-5 text-primary" />}
-                  {isFavorite ? 'Favoritado' : 'Favoritar'}
+                  Favoritar
                 </Button>
               </div>
             </div>
@@ -365,7 +369,7 @@ export function NftDetailPage() {
         </Tabs>
       </section>
 
-      <RelatedCarousel title="Mais desta coleção" items={related.data?.items} isPending={related.isPending} />
+      <RelatedCarousel title="Mais desta coleção" items={relatedItems} isPending={relatedPending} />
 
       {/* Mobile buy bar (Figma "Buy Bar"). */}
       <div className="fixed inset-x-0 bottom-0 z-40 flex flex-col gap-5 rounded-t-[40px] bg-card px-6 pt-5 pb-[max(env(safe-area-inset-bottom),24px)] shadow-[0_0_20px_0_#0a060473] lg:hidden">

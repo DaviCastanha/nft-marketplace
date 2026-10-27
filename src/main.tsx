@@ -22,6 +22,10 @@ async function bootstrap() {
       <App />
     </StrictMode>,
   )
+  if (import.meta.env.VITE_ENABLE_MOCKS === 'true') {
+    const { mountScenarioPanel } = await import('@/mocks/ui/mount')
+    mountScenarioPanel()
+  }
 }
 
 void bootstrap()

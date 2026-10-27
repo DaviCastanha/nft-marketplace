@@ -33,7 +33,8 @@ export function NftCard({ nft, sizes, priority }: NftCardProps) {
   const [zoomOpen, setZoomOpen] = useState(false)
   const isFavorite = favorites.has(nft.id)
   const soldOut = nft.available === 0
-  const favoriteLabel = isFavorite ? `Remover ${nft.name} dos favoritos` : `Favoritar ${nft.name}`
+  // Toggle button pattern: constant name, state exposed through aria-pressed.
+  const favoriteLabel = `Favoritar ${nft.name}`
 
   return (
     <article
