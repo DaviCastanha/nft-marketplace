@@ -34,12 +34,12 @@ export function PriceSummary({ quote, isPending, className }: { quote: Quote | u
           {Number(quote.discount) > 0 && ' ETH'}
         </dd>
       </div>
-      <div className="flex flex-col items-end gap-1">
-        <div className="flex w-full justify-between">
-          <dt>Taxa de rede</dt>
-          <dd className="text-lg">{formatEth(quote.networkFee)}</dd>
-        </div>
-        <span className="text-xs text-text-accent">Taxa estimada</span>
+      <div className="flex justify-between">
+        <dt>Taxa de rede</dt>
+        <dd className="flex flex-col items-end gap-1">
+          <span className="text-lg leading-5">{formatEth(quote.networkFee)}</span>
+          <span className="text-xs text-text-accent">Taxa estimada</span>
+        </dd>
       </div>
       <div className="mt-3 flex justify-between font-bold">
         <dt className="text-base">Total</dt>

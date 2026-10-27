@@ -2,24 +2,27 @@ import { useNavigate } from '@tanstack/react-router'
 import { useId, useState } from 'react'
 import { SearchOutlineIcon } from '@/shared/components/icons'
 import { Button } from '@/shared/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/shared/components/ui/dialog'
 import { Input } from '@/shared/components/ui/input'
 
-export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+/** Header search. The trigger is a Radix DialogTrigger, so focus returns to it on close. */
+export function SearchDialog({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
+  const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const inputId = useId()
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault()
     const q = query.trim()
-    onOpenChange(false)
+    setOpen(false)
     // A new search starts from the first page; other filters are kept.
     void navigate({ to: '/', search: (prev) => ({ ...prev, q: q || undefined, page: undefined }), hash: 'mercado' })
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="top-24 translate-y-0 sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Buscar NFTs</DialogTitle>

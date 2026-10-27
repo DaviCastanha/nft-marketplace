@@ -223,7 +223,7 @@ function ProfileFormView({ user }: { user: User }) {
                     <FormLabel className="sr-only">Sufixo ENS</FormLabel>
                     <Select value={f.value} onValueChange={f.onChange}>
                       <FormControl>
-                        <SelectTrigger className="h-10 w-[78px] rounded-[2px] border-border">
+                        <SelectTrigger className="h-10 w-[78px] gap-1 rounded-[2px] border-border px-2">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>

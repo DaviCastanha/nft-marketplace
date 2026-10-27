@@ -16,12 +16,13 @@ export function AccountMenu({ user }: { user: User }) {
   const logout = useLogout()
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        className="flex h-[35px] max-w-[180px] items-center gap-2 rounded-md border border-primary px-2 text-sm font-medium text-text-accent"
-        aria-label={`Menu da conta de ${user.displayName}`}
-      >
+      {/* The accessible name contains the visible username (WCAG 2.5.3, label in name). */}
+      <DropdownMenuTrigger className="flex h-[35px] max-w-[180px] items-center gap-2 rounded-md border border-primary px-2 text-sm font-medium text-text-accent">
         <UserAvatar user={user} className="size-6" />
-        <span className="truncate">{user.username}</span>
+        <span className="truncate">
+          <span className="sr-only">Menu da conta: </span>
+          {user.username}
+        </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="truncate font-normal text-text-secondary">{user.email}</DropdownMenuLabel>

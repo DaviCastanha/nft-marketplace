@@ -24,9 +24,10 @@ interface ReviewDialogProps {
 }
 
 export function ReviewDialog({ open, onOpenChange, quote, reviewedQuote, onAcceptChanges, buyer, connection, onConfirm, isSubmitting, error, canRetry }: ReviewDialogProps) {
-  const changes = quote && reviewedQuote && quote.id !== reviewedQuote.id ? quoteChanges(reviewedQuote, quote) : []
+  // A retry resends the previous attempt as-is, so differences and blocking do not apply to it.
+  const changes = !canRetry && quote && reviewedQuote && quote.id !== reviewedQuote.id ? quoteChanges(reviewedQuote, quote) : []
   const needsAcceptance = changes.length > 0
-  const blocked = !quote?.purchasable
+  const blocked = !canRetry && !quote?.purchasable
 
   return (
     <Dialog open={open} onOpenChange={(next) => !isSubmitting && onOpenChange(next)}>
@@ -93,7 +94,7 @@ export function ReviewDialog({ open, onOpenChange, quote, reviewedQuote, onAccep
           <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
             Voltar
           </Button>
-          <Button type="button" onClick={onConfirm} disabled={isSubmitting || needsAcceptance || blocked || !connection}>
+          <Button type="button" onClick={onConfirm} disabled={isSubmitting || needsAcceptance || blocked || (!connection && !canRetry)}>
             {isSubmitting ? 'Confirmando…' : canRetry ? 'Tentar novamente' : 'Confirmar e pagar'}
           </Button>
         </DialogFooter>

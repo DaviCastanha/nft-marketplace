@@ -155,7 +155,7 @@ function BuyerForm({ form, wallets, onNetworkChange, onWalletChange }: { form: U
                   <FormLabel className="sr-only">Sufixo ENS</FormLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
-                      <SelectTrigger className="h-10 w-[78px] rounded-[2px] border-border">
+                      <SelectTrigger className="h-10 w-[78px] gap-1 rounded-[2px] border-border px-2">
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
@@ -287,6 +287,7 @@ function CheckoutContent({ user, wallets }: { user: User; wallets: Wallet[] }) {
   const [reviewedQuote, setReviewedQuote] = useState<Quote | null>(null)
   const [buyer, setBuyer] = useState<Buyer | null>(null)
   const [submitError, setSubmitError] = useState<{ message: string; canRetry: boolean } | null>(null)
+  const [lastAttempt, setLastAttempt] = useState<{ payload: { quoteId: string; walletSessionId: string; buyer: Buyer }; key: string } | null>(null)
   const [needsWallet, setNeedsWallet] = useState(false)
 
   // The draft survives refreshes and session expiry, so the user can resume after logging in again.
@@ -356,14 +357,27 @@ function CheckoutContent({ user, wallets }: { user: User; wallets: Wallet[] }) {
   })
 
   const confirm = () => {
+    // A retry after a lost response resends the exact same attempt (same payload, same key),
+    // even if the cart or quote changed meanwhile because that very order already went through.
+    if (submitError?.canRetry && lastAttempt) {
+      setSubmitError(null)
+      createOrder.mutate(lastAttempt)
+      return
+    }
     if (!quote.data || !connection || !buyer) return
     const payload = { quoteId: quote.data.id, walletSessionId: connection.id, buyer }
+    const attempt = { payload, key: idempotencyKeyFor(user.id, payload) }
+    setLastAttempt(attempt)
+    setReviewedQuote(quote.data)
     setSubmitError(null)
-    createOrder.mutate({ payload, key: idempotencyKeyFor(user.id, payload) })
+    createOrder.mutate(attempt)
   }
+  const attemptInFlight = createOrder.isPending || Boolean(submitError?.canRetry)
 
   if (cart.isPending) return <Skeleton className="page-container h-96" />
-  if (!hasItems && !hasPendingOrder) {
+  // While an attempt is in flight or awaiting a retry, the cart may legitimately empty out
+  // (the order settled server-side): keep the checkout and its dialog mounted.
+  if (!hasItems && !hasPendingOrder && !attemptInFlight) {
     return (
       <section className="page-container flex flex-col items-start gap-4 py-10">
         <h1 className="text-2xl font-bold">Seu carrinho está vazio</h1>
@@ -457,7 +471,8 @@ function CheckoutContent({ user, wallets }: { user: User; wallets: Wallet[] }) {
         <ReviewDialog
           open={reviewOpen}
           onOpenChange={setReviewOpen}
-          quote={quote.data}
+          // During an attempt the dialog shows what was sent, not a quote recomputed afterwards.
+          quote={attemptInFlight ? (reviewedQuote ?? undefined) : quote.data}
           reviewedQuote={reviewedQuote}
           onAcceptChanges={() => {
             setReviewedQuote(quote.data ?? null)

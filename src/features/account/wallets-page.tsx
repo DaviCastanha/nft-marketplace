@@ -139,7 +139,7 @@ function WalletForm({ slot, initial, onSaved, onCancel }: { slot: WalletSlot; in
                     <FormLabel className="sr-only">Sufixo ENS</FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <SelectTrigger className="h-10 w-[78px] rounded-[2px] border-border">
+                        <SelectTrigger className="h-10 w-[78px] gap-1 rounded-[2px] border-border px-2">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>

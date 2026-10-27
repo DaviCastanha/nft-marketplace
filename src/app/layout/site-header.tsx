@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, useLocation } from '@tanstack/react-router'
-import { useState } from 'react'
 import { cartQueries } from '@/features/cart/api'
 import { AccountMenu } from '@/app/layout/account-menu'
 import { SearchDialog } from '@/app/layout/search-dialog'
@@ -31,7 +30,6 @@ function NavItem({ active, children }: { active: boolean; children: React.ReactN
 export function SiteHeader() {
   const { pathname } = useLocation()
   const user = useCurrentUser()
-  const [searchOpen, setSearchOpen] = useState(false)
   const cart = useQuery({ ...cartQueries.cart(user?.id ?? null), select: (c) => c.itemCount })
   const itemCount = cart.data ?? 0
   const inMarket = MARKET_PATHS.some((p) => pathname.startsWith(p))
@@ -64,9 +62,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-7">
-          <button type="button" onClick={() => setSearchOpen(true)} className="grid size-8 place-items-center rounded-sm" aria-label="Buscar NFTs">
-            <SearchIcon className="size-5" />
-          </button>
+          <SearchDialog>
+            <button type="button" className="grid size-8 place-items-center rounded-sm" aria-label="Buscar NFTs">
+              <SearchIcon className="size-5" />
+            </button>
+          </SearchDialog>
           <Link to="/cart" className="relative grid size-8 place-items-center rounded-sm" aria-label={`Carrinho, ${itemCount} ${itemCount === 1 ? 'item' : 'itens'}`}>
             <CartIcon className="h-6 w-[25px]" />
             {itemCount > 0 && (
@@ -90,7 +90,6 @@ export function SiteHeader() {
           )}
         </div>
       </div>
-      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   )
 }
