@@ -2,6 +2,8 @@ import { defineConfig, devices } from '@playwright/test'
 
 const PORT = 4173
 const isCI = Boolean(process.env.CI)
+/** Set E2E_BASE_URL to run the suites against a deployment (e.g. the Vercel URL) instead of a local build. */
+const remoteBaseUrl = process.env.E2E_BASE_URL
 
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -11,7 +13,7 @@ export default defineConfig({
   retries: isCI ? 1 : 0,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    baseURL: remoteBaseUrl ?? `http://localhost:${PORT}`,
     locale: 'pt-BR',
     timezoneId: 'America/Sao_Paulo',
     trace: 'retain-on-failure',
@@ -26,10 +28,12 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } } },
   ],
   // Tests run against the optimized demo build (production bundle + MSW), as evaluated.
-  webServer: {
-    command: 'npm run build:demo && npm run preview',
-    url: `http://localhost:${PORT}`,
-    reuseExistingServer: !isCI,
-    timeout: 180_000,
-  },
+  webServer: remoteBaseUrl
+    ? undefined
+    : {
+        command: 'npm run build:demo && npm run preview',
+        url: `http://localhost:${PORT}`,
+        reuseExistingServer: !isCI,
+        timeout: 180_000,
+      },
 })

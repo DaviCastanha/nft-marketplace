@@ -2,7 +2,7 @@
 
 Solução do desafio Frontend da Jungle Gaming: marketplace de NFTs em **React + TypeScript**, seguindo o layout do Figma, com os fluxos de descoberta, compra e conta funcionando sobre uma **API simulada com MSW** (REST + Socket.IO).
 
-- **Demonstração:** _URL da Vercel_
+- **Demonstração:** https://nft-marketplace-davicastanha.vercel.app
 - **Arquitetura, contratos e decisões:** [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Auditoria Lighthouse:** [lighthouse/summary.md](lighthouse/summary.md)
 
@@ -48,6 +48,8 @@ npm run dev            # desenvolvimento com mocks em http://localhost:5173
 | `npm run lighthouse` | Build de demo + preview + 3 execuções por página/perfil; relatórios em `lighthouse/reports` e medianas em `lighthouse/summary.md` |
 
 Na primeira execução do Playwright pode ser preciso instalar o navegador: `npx playwright install chromium`.
+
+Para rodar as suítes contra a versão publicada em vez de um build local, use `E2E_BASE_URL=https://nft-marketplace-davicastanha.vercel.app npm run test:e2e` (a suíte completa passa contra o deploy).
 
 ### Variáveis de ambiente
 
