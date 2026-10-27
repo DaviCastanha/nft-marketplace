@@ -33,7 +33,7 @@ function MobileSearchBar({ search, onSearch, onOpenFilters }: { search: CatalogS
     <div className="page-container flex gap-2 pt-10 lg:hidden">
       <form
         role="search"
-        className="flex h-[45px] flex-1 items-center gap-2 rounded-[10px] bg-card px-3"
+        className="flex h-[45px] min-w-0 flex-1 items-center gap-2 rounded-[10px] bg-card px-3"
         onSubmit={(e) => {
           e.preventDefault()
           onSearch(value.trim() || undefined)

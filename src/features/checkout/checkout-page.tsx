@@ -336,6 +336,9 @@ function CheckoutContent({ user, wallets }: { user: User; wallets: Wallet[] }) {
         if (parsed.success) queryClient.setQueryData(checkoutQuoteKey(user.id, parsed.data.network), parsed.data)
       }
       if (error.code === 'WALLET_DISCONNECTED') setConnection(null)
+      // The API knows about an order still settling: surface it (banner with a link) instead of buying again.
+      const pendingId = (error.details as { orderId?: unknown } | undefined)?.orderId
+      if (error.code === 'ORDER_PENDING' && typeof pendingId === 'string') pendingOrder.write(user.id, pendingId)
       const mapped = errorMessage(error)
       setSubmitError(mapped)
       announce(mapped.message)
@@ -357,6 +360,9 @@ function CheckoutContent({ user, wallets }: { user: User; wallets: Wallet[] }) {
   })
 
   const confirm = () => {
+    // Once an order exists (or is being created), this checkout never sends another one: a late
+    // click before navigating away would otherwise build a new payload from a refreshed quote.
+    if (createOrder.isPending || createOrder.isSuccess) return
     // A retry after a lost response resends the exact same attempt (same payload, same key),
     // even if the cart or quote changed meanwhile because that very order already went through.
     if (submitError?.canRetry && lastAttempt) {
@@ -372,7 +378,7 @@ function CheckoutContent({ user, wallets }: { user: User; wallets: Wallet[] }) {
     setSubmitError(null)
     createOrder.mutate(attempt)
   }
-  const attemptInFlight = createOrder.isPending || Boolean(submitError?.canRetry)
+  const attemptInFlight = createOrder.isPending || createOrder.isSuccess || Boolean(submitError?.canRetry)
 
   if (cart.isPending) return <Skeleton className="page-container h-96" />
   // While an attempt is in flight or awaiting a retry, the cart may legitimately empty out
@@ -481,7 +487,7 @@ function CheckoutContent({ user, wallets }: { user: User; wallets: Wallet[] }) {
           buyer={buyer}
           connection={connection}
           onConfirm={confirm}
-          isSubmitting={createOrder.isPending}
+          isSubmitting={createOrder.isPending || createOrder.isSuccess}
           error={submitError?.message ?? null}
           canRetry={submitError?.canRetry ?? false}
         />

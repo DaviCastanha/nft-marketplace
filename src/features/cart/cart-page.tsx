@@ -42,7 +42,7 @@ function CartLine({ item, line }: { item: CartItem; line: QuoteLine | undefined 
     <li className="flex flex-col gap-2">
       <article
         aria-label={item.name}
-        className="relative grid grid-cols-[100px_1fr] items-center gap-x-3 overflow-hidden rounded-[10px] bg-card pr-3 lg:h-[70px] lg:grid-cols-[311px_139px_136px_148px_24px] lg:gap-x-0 lg:rounded-none lg:pr-6"
+        className="relative grid grid-cols-[100px_1fr] items-center gap-x-3 overflow-hidden rounded-[10px] bg-card pr-3 lg:h-[70px] lg:grid-cols-[minmax(0,2.2fr)_1fr_1fr_1fr_24px] lg:gap-x-0 lg:rounded-none lg:pr-6"
       >
         <div className="flex items-center gap-4 max-lg:contents">
           <NftImage image={item.image} sizes="100px" alt="" className="size-[100px] rounded-l-[10px] lg:size-[70px] lg:rounded-none" />
@@ -169,9 +169,9 @@ export function CartPage() {
             </Button>
           </div>
         ) : (
-          <div className="flex flex-col gap-10 lg:flex-row lg:justify-between">
-            <div className="flex flex-col gap-3 lg:w-[782px]">
-              <div aria-hidden="true" className="hidden grid-cols-[311px_139px_136px_148px_24px] border-b-[0.5px] border-primary pb-3 text-lg leading-4 font-bold lg:grid">
+          <div className="flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-8">
+            <div className="flex min-w-0 flex-col gap-3 lg:max-w-[782px] lg:flex-1">
+              <div aria-hidden="true" className="hidden grid-cols-[minmax(0,2.2fr)_1fr_1fr_1fr_24px] pr-6 border-b-[0.5px] border-primary pb-3 text-lg leading-4 font-bold lg:grid">
                 <span>NFTs</span>
                 <span>Preço</span>
                 <span>Edições</span>
@@ -187,7 +187,7 @@ export function CartPage() {
             <aside
               aria-labelledby="summary-title"
               // Phones: bottom sheet that sticks while the item list scrolls, without ever covering items.
-              className="flex flex-col gap-6 max-lg:sticky max-lg:bottom-0 max-lg:z-30 max-lg:-mx-4 max-lg:rounded-t-[40px] max-lg:bg-card max-lg:px-6 max-lg:pt-6 max-lg:pb-[max(env(safe-area-inset-bottom),24px)] max-lg:shadow-card sm:max-lg:-mx-6 lg:w-[332px]"
+              className="flex flex-col gap-6 max-lg:sticky max-lg:bottom-0 max-lg:z-30 max-lg:-mx-4 max-lg:rounded-t-[40px] max-lg:bg-card max-lg:px-6 max-lg:pt-6 max-lg:pb-[max(env(safe-area-inset-bottom),24px)] max-lg:shadow-card sm:max-lg:-mx-6 lg:w-[332px] lg:shrink-0"
             >
               <h2 id="summary-title" className="border-b-[0.5px] border-primary pb-3 text-lg leading-4 font-bold max-lg:sr-only">
                 Resumo da carteira

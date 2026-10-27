@@ -26,9 +26,16 @@ test.describe('resiliência do tempo real', () => {
     await gotoApp(page, '/nfts/emerald-ape-042')
     await expect(page.getByRole('heading', { level: 1, name: 'Emerald Ape #042' })).toBeVisible()
 
-    // The change happens while the connection is down; the event is lost, the refetch after reconnecting is not.
+    // The event about this change is lost in transit, so the page keeps the old price…
+    await mock.realtimeConnected()
+    await mock.pauseEvents(true)
+    await mock.call('POST', '/nfts/emerald-ape-042', { editionId: '1-50', price: '1.75' })
+    await page.waitForTimeout(500)
+    await expect(detailPrice(page)).toContainText('1.19 ETH')
+
+    // …until the connection drops and comes back: the client then reconciles over REST.
+    await mock.pauseEvents(false)
     await mock.dropSocket()
-    await mock.updateNft('emerald-ape-042', { editionId: '1-50', price: '1.75' })
     await expect(detailPrice(page)).toContainText('1.75 ETH', { timeout: 10_000 })
   })
 
@@ -57,7 +64,7 @@ test.describe('resiliência do tempo real', () => {
     expect(orderIdFromUrl(page)).toBe(orderId)
   })
 
-  test('pedido de outro usuário não é acessível', async ({ page, mock }) => {
+  test('pedido de outro usuário responde sem permissão (403)', async ({ page, mock }) => {
     await login(page, ALICE, '/')
     await mock.scenario('order-pending')
     await addToCartViaApi(page, [{ nftId: 'golden-signal-160', quantity: 1 }])
@@ -71,6 +78,8 @@ test.describe('resiliência do tempo real', () => {
     await page.getByRole('navigation', { name: 'Minha conta' }).getByRole('button', { name: 'Sair' }).click()
     await expect(page).toHaveURL(/\/$/)
     await login(page, BRUNO, `/orders/${orderId}`)
-    await expect(page.getByRole('heading', { name: 'Pedido não encontrado' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Acesso negado' })).toBeVisible()
+    await expect(page.getByText('Você não tem permissão para ver este pedido.')).toBeVisible()
+    await expect(page.getByRole('table')).toHaveCount(0)
   })
 })

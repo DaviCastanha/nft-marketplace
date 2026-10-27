@@ -39,12 +39,13 @@ export function HomeHero() {
   return (
     <section aria-roledescription="carrossel" aria-label="Destaques" className="page-container">
       {/* Desktop hero (Figma "Hero": 600px copy column, 450px artwork). */}
-      <div className="hidden min-h-[450px] items-center gap-[110px] pl-10 lg:flex">
-        <div className="flex w-[600px] shrink-0 flex-col gap-11">
+      {/* Exact Figma widths from xl (1280px); fluid between 1024px and 1280px. */}
+      <div className="hidden min-h-[450px] items-center gap-12 pl-10 lg:flex xl:gap-[110px]">
+        <div className="flex max-w-[600px] min-w-0 flex-1 flex-col gap-11 xl:w-[600px] xl:flex-none">
           <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-1">
               <p className="text-sm leading-4 font-medium tracking-[1.4px]">Bem-vindo à Kurio</p>
-              <h1 className="text-[43px] leading-[70px] font-bold">
+              <h1 className="text-[36px] leading-[58px] font-bold xl:text-[43px] xl:leading-[70px]">
                 SEJA DONO DO FUTURO
                 <br />
                 DA ARTE DIGITAL
@@ -66,12 +67,12 @@ export function HomeHero() {
           params={{ nftId: slide.nftId }}
           aria-roledescription="slide"
           aria-label={`Destaque ${active + 1} de ${SLIDES.length}: ver ${slide.alt.split(':')[0]}`}
-          className="block size-[450px] shrink-0 overflow-hidden rounded-[24px]"
+          className="block size-[380px] shrink-0 overflow-hidden rounded-[24px] xl:size-[450px]"
         >
           <img
             src={`/nfts/${slide.artwork}-640.webp`}
             srcSet={srcSet(slide.artwork)}
-            sizes="450px"
+            sizes="(min-width: 1280px) 450px, 380px"
             width={450}
             height={450}
             alt={slide.alt}

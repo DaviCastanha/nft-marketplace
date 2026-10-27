@@ -33,6 +33,18 @@ test.describe('carregamento, falha e recuperação', () => {
     await expect(page.getByRole('link', { name: /Página 2 de 8/ })).toHaveAttribute('aria-current', 'page')
   })
 
+  test('timeout da requisição mantém o skeleton e a nova tentativa recupera', async ({ page, mock }) => {
+    await page.clock.install()
+    await gotoApp(page, '/')
+    await mock.scenario('timeout')
+    await gotoApp(page, '/?page=3')
+    await expect(page.getByRole('status', { name: 'Carregando NFTs' })).toBeVisible()
+    // The first request never answers: jump past the 10 s client timeout; the retry succeeds.
+    await page.clock.fastForward(11_000)
+    await expect(page.getByRole('link', { name: /Página 3 de 8/ })).toHaveAttribute('aria-current', 'page', { timeout: 10_000 })
+    await expect(page.getByRole('status', { name: 'Carregando NFTs' })).toHaveCount(0)
+  })
+
   test('sem conexão: feedback e retomada quando a rede volta', async ({ page, mock }) => {
     await gotoApp(page, '/nfts/emerald-ape-042')
     await expect(page.getByRole('heading', { level: 1, name: 'Emerald Ape #042' })).toBeVisible()

@@ -95,15 +95,15 @@ function Receipt({ order }: { order: Order }) {
               <tr key={`${line.nftId}-${line.editionId}`}>
                 <td className="py-2">
                   <div className="flex items-center gap-3">
-                    <NftImage image={line.image} sizes="70px" alt="" className="size-[70px] rounded-sm" />
+                    <NftImage image={line.image} sizes="70px" alt="" className="size-12 shrink-0 rounded-sm sm:size-[70px]" />
                     <div className="flex flex-col">
                       <span className="font-bold">{line.name}</span>
-                      <span className="text-sm text-text-tertiary">ID do token: {line.tokenId}</span>
+                      <span className="hidden text-sm text-text-tertiary sm:inline">ID do token: {line.tokenId}</span>
                     </div>
                   </div>
                 </td>
-                <td className="text-center text-text-secondary">(x {line.quantity})</td>
-                <td className="text-right text-lg font-bold text-text-accent">{formatEth(line.lineTotal)}</td>
+                <td className="px-2 text-center whitespace-nowrap text-text-secondary">(x {line.quantity})</td>
+                <td className="text-right font-bold whitespace-nowrap text-text-accent sm:text-lg">{formatEth(line.lineTotal)}</td>
               </tr>
             ))}
           </tbody>
@@ -216,9 +216,9 @@ export function OrderPage() {
         </div>
       ) : order.error ? (
         <section role="alert" className="mx-auto flex max-w-[578px] flex-col items-start gap-4">
-          <h1 className="text-xl font-bold">{order.error.code === 'NOT_FOUND' ? 'Pedido não encontrado' : 'Não foi possível carregar o pedido'}</h1>
+          <h1 className="text-xl font-bold">{order.error.code === 'NOT_FOUND' ? 'Pedido não encontrado' : order.error.code === 'FORBIDDEN' ? 'Acesso negado' : 'Não foi possível carregar o pedido'}</h1>
           <p className="text-text-secondary">{order.error.message}</p>
-          {order.error.code !== 'NOT_FOUND' && (
+          {order.error.code !== 'NOT_FOUND' && order.error.code !== 'FORBIDDEN' && (
             <Button type="button" onClick={() => void order.refetch()}>
               Tentar novamente
             </Button>

@@ -10,6 +10,8 @@ export const realtimeStatus = {
   set(next: RealtimeStatus) {
     if (next === status) return
     status = next
+    // Mirrored on <html> for debugging and automation (tests wait for "connected").
+    document.documentElement.dataset.realtime = next
     listeners.forEach((listener) => listener())
   },
   subscribe(listener: () => void) {

@@ -49,6 +49,17 @@ npm run dev            # desenvolvimento com mocks em http://localhost:5173
 
 Na primeira execução do Playwright pode ser preciso instalar o navegador: `npx playwright install chromium`.
 
+### Variáveis de ambiente
+
+Os valores padrão já estão nos arquivos versionados `.env.development`, `.env.demo` e `.env.production`; nenhum serviço externo é necessário. Para sobrescrever localmente, crie `.env.local` (ignorado pelo git).
+
+| Variável | dev / demo | production | Descrição |
+| --- | --- | --- | --- |
+| `VITE_ENABLE_MOCKS` | `true` | `false` | Ativa a camada MSW (REST e Socket.IO). Com `false`, o MSW nem entra no bundle |
+| `VITE_API_URL` | `/api` | `/api` | Base das chamadas REST (Axios) |
+| `VITE_SOCKET_URL` | vazio | vazio | Origem do Socket.IO; vazio significa a mesma origem |
+| `VITE_MOCK_SCENARIO` | `default` | — | Cenário inicial da simulação (veja a tabela abaixo) |
+
 ## Dados de demonstração
 
 | Usuário | E-mail | Senha |
@@ -65,6 +76,7 @@ Os dados ficam no navegador (localStorage) e sobrevivem ao refresh. O botão **S
 - trocar o cenário;
 - restaurar os dados iniciais;
 - alterar o preço ou esgotar uma edição (o evento chega pelo Socket.IO);
+- confirmar ou recusar pedidos pendentes (cenário `order-pending`);
 - expirar a sessão;
 - derrubar a conexão em tempo real.
 
@@ -78,6 +90,7 @@ O cenário também pode ser escolhido pela URL, com `?scenario=<id>`, ou pela va
 | `variable-latency` | Latência entre 200 ms e 1,6 s (semente fixa) |
 | `out-of-order` | Buscas mais recentes respondem antes das anteriores |
 | `flaky` | Catálogo e detalhe falham (503) até uma nova tentativa manual |
+| `timeout` | A primeira busca do catálogo e do detalhe não responde (timeout de 10 s); a nova tentativa automática recupera |
 | `server-error` | Catálogo e detalhe sempre 500 |
 | `offline` | Falha de conexão em todas as chamadas |
 | `session-expired` | Sessões expiram 30 s após o login |
@@ -88,6 +101,27 @@ O cenário também pode ser escolhido pela URL, com `?scenario=<id>`, ou pela va
 | `payment-rejected` | Pagamentos são recusados |
 | `order-pending` | Pedidos ficam pendentes até serem resolvidos pelo painel |
 | `wallet-rejected` | A carteira recusa a conexão |
+
+### Como reproduzir os fluxos de falha
+
+Use a URL com `?scenario=` uma vez (o cenário fica salvo) ou escolha no painel **Simulação**. Para voltar ao normal, selecione **Padrão**; para restaurar todos os dados, use **Restaurar dados iniciais**.
+
+| Fluxo | Passos |
+| --- | --- |
+| Catálogo vazio, lento, com falha, timeout ou offline | Abra `/?scenario=empty`, `slow`, `flaky`, `timeout` ou `offline`. Em `flaky` e `offline`, use **Tentar novamente** depois de voltar ao cenário **Padrão** |
+| Respostas fora de ordem | `/?scenario=out-of-order` e clique em vários filtros seguidos: a lista final corresponde ao último filtro |
+| Sessão expirada | Entre, abra o perfil ou o checkout e use **Expirar sessão** no painel; a próxima ação leva ao login e, depois de entrar, você volta à mesma tela (o rascunho do checkout é preservado). Com `?scenario=session-expired`, a sessão expira sozinha em 30 s |
+| Acesso sem permissão | Entre como Alice, conclua uma compra e copie a URL do pedido; entre como Bruno e abra essa URL (403, "Acesso negado") |
+| Conflito de cadastro e validação | Cadastre-se com `alice@jungle.test`, ou salve o perfil com o usuário `bruno` |
+| Cupom inválido ou expirado | No carrinho, aplique `NAOEXISTE` ou `EXPIRED20` |
+| Falha ao favoritar | `?scenario=favorites-fail` e favorite um NFT: o estado volta ao anterior e um aviso aparece |
+| Preço alterado ou edição esgotada | Com o NFT no carrinho, use **Mudar preço** ou **Esgotar edição** no painel (eventos via Socket.IO). Para o checkout, use `?scenario=price-change-on-checkout` ou `sold-out-on-checkout`, ou o painel com a revisão aberta: a confirmação exige aceitar os novos valores |
+| Timeout após criar o pedido | `?scenario=order-timeout`, confirme a compra, aguarde o aviso (10 s) e clique em **Tentar novamente**: o mesmo pedido é recuperado |
+| Pagamento recusado | `?scenario=payment-rejected`: o pedido termina recusado e os itens continuam no carrinho |
+| Pedido pendente, desconexão e retomada | `?scenario=order-pending`, conclua a compra, use **Derrubar conexão Socket.IO** e recarregue a página: o pedido segue pendente, e o checkout bloqueia uma nova compra. Depois use **Confirmar** ou **Recusar pedidos pendentes** no painel |
+| Carteira recusa a conexão | `?scenario=wallet-rejected` e clique em **Conectar carteira** no checkout |
+
+Todos esses fluxos também estão automatizados nas suítes Playwright (veja a tabela de testes no [ARCHITECTURE.md](ARCHITECTURE.md#12-testes)).
 
 ## Estrutura
 

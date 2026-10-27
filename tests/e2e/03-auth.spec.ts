@@ -59,6 +59,27 @@ test.describe('cadastro, login e sessão', () => {
     await expect(page.getByRole('heading', { name: 'Lista de interesse' })).toBeVisible()
   })
 
+  test('expiração durante o checkout preserva o rascunho para retomada', async ({ page, mock }) => {
+    await login(page, ALICE, '/')
+    await addToCartViaApi(page, [{ nftId: 'golden-beat-207', quantity: 1 }])
+    await gotoApp(page, '/checkout')
+    const note = page.getByLabel('Observação do colecionador (opcional)')
+    await note.fill('Presente para a coleção da família')
+    await page.getByLabel('Código de indicação').fill('KURIO-PRESENTE')
+
+    await mock.expireSessions()
+    await page.getByRole('button', { name: 'Conectar carteira' }).click()
+    await expect(page).toHaveURL(/\/login\?redirect=%2Fcheckout&reason=expired/)
+
+    await page.getByLabel('E-mail').fill(ALICE.email)
+    await page.getByLabel('Senha', { exact: true }).fill(ALICE.password)
+    await page.getByRole('button', { name: 'Entrar', exact: true }).click()
+    await expect(page).toHaveURL(/\/checkout$/)
+    await expect(page.getByLabel('Observação do colecionador (opcional)')).toHaveValue('Presente para a coleção da família')
+    await expect(page.getByLabel('Código de indicação')).toHaveValue('KURIO-PRESENTE')
+    await expect(page.getByRole('list', { name: 'Itens do pedido' }).getByText('Golden Beat #207')).toBeVisible()
+  })
+
   test('logout e troca de usuário não expõem dados da sessão anterior', async ({ page }) => {
     await login(page, ALICE, '/favorites')
     await expect(page.getByRole('link', { name: 'Sage Nomad #009', exact: true })).toBeVisible()

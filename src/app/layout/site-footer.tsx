@@ -105,7 +105,7 @@ function Newsletter() {
 export function SiteFooter({ className }: { className?: string }) {
   return (
     <footer className={cn('page-container mt-16 pb-6 lg:mt-24', className)}>
-      <section aria-label="Serviços Kurio" className="grid gap-8 bg-card p-8 md:grid-cols-2 lg:grid-cols-[repeat(3,1fr)_1.35fr] lg:gap-0">
+      <section aria-label="Serviços Kurio" className="grid grid-cols-1 gap-8 bg-card p-5 break-words sm:p-8 md:grid-cols-2 lg:grid-cols-[repeat(3,1fr)_1.35fr] lg:gap-0">
         {SERVICES.map((service) => (
           <div key={service.mark} className="flex flex-col gap-3 lg:border-r lg:border-primary lg:px-4">
             <span aria-hidden="true" className="grid size-[74px] place-items-center rounded-full bg-primary text-2xl font-bold text-ink">
@@ -120,7 +120,7 @@ export function SiteFooter({ className }: { className?: string }) {
         </div>
       </section>
 
-      <div className="flex flex-col gap-4 bg-surface-dark p-8 text-sm leading-[22px] md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 bg-surface-dark p-5 text-sm break-words sm:p-8 leading-[22px] md:flex-row md:items-center md:justify-between">
         <Link to="/" className="text-sm font-bold tracking-[1.4px]" aria-label="Kurio, página inicial">
           KURIO
         </Link>
@@ -133,7 +133,7 @@ export function SiteFooter({ className }: { className?: string }) {
         <a href="tel:+551140028922">+55 11 4002 8922</a>
       </div>
 
-      <div className="grid gap-10 bg-card p-8 sm:grid-cols-2 lg:grid-cols-[repeat(3,1fr)_auto] lg:gap-[124px]">
+      <div className="grid grid-cols-1 gap-10 bg-card p-5 break-words sm:grid-cols-2 sm:p-8 lg:grid-cols-[repeat(3,1fr)_auto] lg:gap-[124px]">
         {COLUMNS.map((column) => (
           <nav key={column.title} aria-label={column.title} className="flex flex-col gap-2">
             <h2 className="text-lg leading-4 font-bold">{column.title}</h2>

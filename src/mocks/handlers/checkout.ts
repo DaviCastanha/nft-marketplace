@@ -73,6 +73,14 @@ export const checkoutHandlers = [
       return HttpResponse.json(toOrder(db().orders[previous.orderId]!))
     }
 
+    // A new attempt (new key) while another order is still settling would be a duplicate purchase.
+    const pendingOrder = Object.values(db().orders).find((o) => o.userId === user.id && o.status === 'pending')
+    if (pendingOrder) {
+      fail(409, 'ORDER_PENDING', 'Você já tem um pedido aguardando confirmação. Acompanhe-o antes de comprar novamente.', {
+        details: { orderId: pendingOrder.id },
+      })
+    }
+
     const quote = db().quotes[input.quoteId]
     const cartKey = userCartKey(user.id)
     if (!quote || quote.cartKey !== cartKey) fail(404, 'NOT_FOUND', 'Cotação não encontrada. Revise o pedido novamente.')
@@ -146,8 +154,9 @@ export const checkoutHandlers = [
   route('get', '/orders/:id', 'orders.get', ({ request, params }) => {
     const user = requireUser(request)
     const order = db().orders[param(params, 'id')]
-    // Other users' orders are reported as missing so their existence is not leaked.
-    if (!order || order.userId !== user.id) fail(404, 'NOT_FOUND', 'Pedido não encontrado.')
+    if (!order) fail(404, 'NOT_FOUND', 'Pedido não encontrado.')
+    // Authenticated, but not the owner: a permission error, with no order data in the body.
+    if (order.userId !== user.id) fail(403, 'FORBIDDEN', 'Você não tem permissão para ver este pedido.')
     return HttpResponse.json(toOrder(order))
   }),
 ]

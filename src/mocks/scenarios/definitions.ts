@@ -113,6 +113,13 @@ export const SCENARIOS = [
     faults: { 'nfts.list': failFirst(UNTIL_MANUAL_RETRY, 503), 'nfts.detail': failFirst(UNTIL_MANUAL_RETRY, 503) },
   },
   {
+    id: 'timeout',
+    label: 'Timeout de requisição',
+    description: 'A primeira busca do catálogo e do detalhe não responde (timeout de 10 s no cliente); a nova tentativa automática recupera.',
+    latency: fixed(DEFAULT_LATENCY_MS),
+    faults: { 'nfts.list': failFirst(1, 'timeout'), 'nfts.detail': failFirst(1, 'timeout') },
+  },
+  {
     id: 'server-error',
     label: 'Erro do servidor',
     description: 'Catálogo e detalhe sempre respondem 500.',

@@ -22,6 +22,7 @@ export type ApiErrorCode =
   | 'OUT_OF_STOCK'
   | 'QUOTE_STALE'
   | 'IDEMPOTENCY_CONFLICT'
+  | 'ORDER_PENDING'
   | 'PAYMENT_REJECTED'
   | 'WALLET_REJECTED'
   | 'UNKNOWN'

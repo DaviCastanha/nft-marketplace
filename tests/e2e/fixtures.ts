@@ -13,6 +13,11 @@ type Json = Record<string, unknown> | unknown[] | null
 export class MockControl {
   constructor(private readonly page: Page) {}
 
+  /** Events are only observable once the page's Socket.IO client is connected. */
+  async realtimeConnected() {
+    await expect(this.page.locator('html[data-realtime="connected"]')).toBeAttached({ timeout: 10_000 })
+  }
+
   async call(method: string, path: string, body?: unknown): Promise<{ status: number; body: Json }> {
     return this.page.evaluate(
       async ({ method, path, body }) => {
@@ -32,11 +37,13 @@ export class MockControl {
     return this.call('PUT', '/scenario', { id })
   }
 
-  updateNft(nftId: string, change: { editionId?: string; price?: string; available?: number }) {
+  async updateNft(nftId: string, change: { editionId?: string; price?: string; available?: number }) {
+    await this.realtimeConnected()
     return this.call('POST', `/nfts/${nftId}`, change)
   }
 
-  replayLastEvent(mode: 'duplicate' | 'stale') {
+  async replayLastEvent(mode: 'duplicate' | 'stale') {
+    await this.realtimeConnected()
     return this.call('POST', '/events/replay', { mode })
   }
 
@@ -53,7 +60,8 @@ export class MockControl {
     return this.call('POST', '/socket/pause', { paused })
   }
 
-  resolveOrder(orderId: string, status: 'confirmed' | 'rejected') {
+  async resolveOrder(orderId: string, status: 'confirmed' | 'rejected') {
+    await this.realtimeConnected()
     return this.call('POST', `/orders/${orderId}/resolve`, { status })
   }
 }

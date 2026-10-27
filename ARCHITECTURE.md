@@ -61,8 +61,8 @@ Todos os schemas estão em `src/shared/contracts`. Cada resposta é validada com
 | | `POST/DELETE /api/cart/coupon` | `{ code }` | `Cart` · `422 COUPON_INVALID/COUPON_EXPIRED` |
 | | `POST /api/cart/merge` | Bearer + `X-Cart-Id` | `Cart` (carrinho do visitante mesclado no do usuário) |
 | Cotação | `POST /api/quote` | `{ network, purpose: 'cart' \| 'checkout' }` | `Quote` (linhas, cupom, subtotal, desconto, taxa, total, `purchasable`, `expiresAt`) |
-| Pedidos | `POST /api/orders` | header `Idempotency-Key`; `{ quoteId, walletSessionId, buyer }` | `201 Order` (novo) · `200 Order` (mesma chave e corpo) · `409 IDEMPOTENCY_CONFLICT / QUOTE_STALE / OUT_OF_STOCK / WALLET_DISCONNECTED` |
-| | `GET /api/orders/:id` | Bearer | `Order` · `404` (inclui pedidos de outro usuário) |
+| Pedidos | `POST /api/orders` | header `Idempotency-Key`; `{ quoteId, walletSessionId, buyer }` | `201 Order` (novo) · `200 Order` (mesma chave e corpo) · `409 IDEMPOTENCY_CONFLICT / QUOTE_STALE / OUT_OF_STOCK / WALLET_DISCONNECTED / ORDER_PENDING` |
+| | `GET /api/orders/:id` | Bearer | `Order` · `404 NOT_FOUND` · `403 FORBIDDEN` (pedido de outro usuário, sem dados no corpo) |
 | Perfil | `GET/PUT /api/profile` | `ProfileInput` | `User` · `409` · `422` |
 | | `POST/DELETE /api/profile/avatar` | `{ dataUrl }` (redimensionado no cliente) | `User` |
 | | `POST /api/profile/password` | `{ currentPassword, newPassword, confirmPassword }` | `204` · `422` |
@@ -71,7 +71,7 @@ Todos os schemas estão em `src/shared/contracts`. Cada resposta é validada com
 | | `POST /api/wallet-sessions` | `{ walletId, network }` | `201 WalletSession` · `409 WALLET_REJECTED` |
 | | `DELETE /api/wallet-sessions/:id` | — | `204` |
 
-**Erros:** o corpo é sempre `{ code, message, fields?, details? }`. O interceptor do Axios converte qualquer falha (HTTP, rede, timeout, cancelamento) em `ApiError`, que é o tipo de erro registrado globalmente no TanStack Query. Os códigos cobrem validação (`VALIDATION_ERROR` com `fields`), sessão inválida (`UNAUTHORIZED`, `SESSION_EXPIRED`), falta de permissão (pedidos de outro usuário respondem 404 para não vazar existência), recurso inexistente, conflitos de disponibilidade e falhas transitórias (`SERVER_ERROR`, `NETWORK_ERROR`, `TIMEOUT`).
+**Erros:** o corpo é sempre `{ code, message, fields?, details? }`. O interceptor do Axios converte qualquer falha (HTTP, rede, timeout, cancelamento) em `ApiError`, que é o tipo de erro registrado globalmente no TanStack Query. Os códigos cobrem validação (`VALIDATION_ERROR` com `fields`), sessão inválida (`UNAUTHORIZED`, `SESSION_EXPIRED`), falta de permissão (`403 FORBIDDEN` ao abrir pedido de outro usuário), recurso inexistente, conflitos de disponibilidade e falhas transitórias (`SERVER_ERROR`, `NETWORK_ERROR`, `TIMEOUT`).
 
 **Timeout:** 10 s por requisição, implementado com timer e `AbortController` em vez do timeout nativo do XHR. O comportamento é o mesmo, mas o relógio da página o controla, então o Playwright consegue reproduzir o cenário de timeout com `page.clock`.
 
@@ -110,7 +110,7 @@ Envelope comum (`shared/contracts/events.ts`):
 - A **disponibilidade é por NFT e edição**. A quantidade fica limitada a `min(disponível, máximo por pedido)`. Reduzir uma quantidade é sempre permitido; aumentar é revalidado pela API.
 - A **cotação** (`POST /quote`) é a referência de valores: o resumo exibe exatamente `subtotal`, `discount`, `networkFee` e `total` da API, sem cálculo no cliente. A chave da query inclui a versão do carrinho, então qualquer mudança gera uma nova cotação. As linhas indicam `price_changed` (com o preço anterior), `insufficient` ou `sold_out`, e problemas bloqueiam a finalização.
 - **Revisão:** o checkout pede uma cotação `purpose: 'checkout'`. O diálogo de revisão compara a cotação aberta com a atual. Se preço, estoque, cupom ou total mudaram (por evento ou por `409 QUOTE_STALE`), ele lista as diferenças e exige um "Revisei os novos valores" antes de habilitar o pagamento.
-- **Pedido idempotente:** a chave `Idempotency-Key` é gerada por tentativa e salva em `sessionStorage` com a impressão do payload. Mesmo payload reutiliza a mesma chave; payload diferente gera chave nova. O botão fica desabilitado durante o envio, o que evita cliques repetidos. Se a resposta se perde por timeout, "Tentar novamente" reenvia exatamente a mesma tentativa, e a API devolve o mesmo pedido (200). Mesma chave com corpo diferente resulta em `409 IDEMPOTENCY_CONFLICT`.
+- **Pedido idempotente:** a chave `Idempotency-Key` é gerada por tentativa e salva em `sessionStorage` com a impressão do payload. Mesmo payload reutiliza a mesma chave; payload diferente gera chave nova. O botão fica desabilitado durante o envio, o que evita cliques repetidos. Se a resposta se perde por timeout, "Tentar novamente" reenvia exatamente a mesma tentativa, e a API devolve o mesmo pedido (200). Mesma chave com corpo diferente resulta em `409 IDEMPOTENCY_CONFLICT`. Como defesa adicional, a API recusa uma tentativa nova (outra chave) enquanto o usuário tem um pedido pendente (`409 ORDER_PENDING`), e o checkout passa a apontar para esse pedido. Depois que um pedido é criado, a instância do checkout não envia outro: um clique tardio, antes da navegação, construiria um payload novo a partir da cotação refeita pela reserva de estoque. A suíte 07 cobriu exatamente essa janela.
 - **Estados:** `pending` → `confirmed | rejected` (terminais). O estoque é reservado na criação e liberado na recusa. Na confirmação, o mock remove do carrinho **apenas** os itens e quantidades comprados; o que foi adicionado depois permanece. O recibo é renderizado a partir do snapshot gravado no pedido, então mudanças posteriores no catálogo não alteram seus valores.
 - **Carteiras:** conexão simulada (`POST /wallet-sessions`), com prompt, aprovação, recusa (cenário `wallet-rejected`) e desconexão. Trocar a rede ou a carteira derruba a conexão, e a API recusa um pedido cuja rede difere da cotação.
 
@@ -138,8 +138,8 @@ Busca, filtros, aba, ordenação e página vivem nos search params, validados po
 
 - **Ativação:** `VITE_ENABLE_MOCKS=true` nos modos `development` e `demo` (o build publicado). O modo `production` exclui os mocks do bundle.
 - **Banco simulado:** estado tipado e persistido em `localStorage`, com chave versionada (`kurio:mock-db:v1`). O seed é determinístico (PRNG com semente fixa e relógio fixo nos fixtures): 72 NFTs, sendo os 9 primeiros os mesmos do Figma, 9 categorias, 3 redes, preços de 0,02 a 12,30 ETH e edições esgotadas; 2 usuários; cupons; a carteira da Alice. O reset (`POST /api/__mock/reset` ou o painel) restaura o seed integralmente.
-- **Cenários** (`mocks/scenarios/definitions.ts`), selecionáveis por `?scenario=`, pelo painel "Simulação" ou por `VITE_MOCK_SCENARIO`, e persistidos: `default`, `empty`, `slow`, `variable-latency` (latência com semente), `out-of-order`, `flaky` (503 até nova tentativa manual), `server-error`, `offline`, `session-expired` (sessão de 30 s), `favorites-fail`, `price-change-on-checkout`, `sold-out-on-checkout`, `order-timeout`, `payment-rejected`, `order-pending`, `wallet-rejected`. A latência e as falhas são aplicadas por rota por um middleware único (`simulateNetwork`), e as sequências são reiniciadas a cada troca de cenário, o que garante reprodutibilidade.
-- **Plano de controle** (`/api/__mock/*`, usado pelo painel e pelo Playwright): estado e cenários, reset, troca de cenário, expirar sessões, alterar preço ou estoque de um NFT, resolver pedido pendente, derrubar o socket, pausar a entrega de eventos (simula socket atrasado, usado para provar a revalidação `QUOTE_STALE` no servidor), repetir o último evento (duplicado ou antigo).
+- **Cenários** (`mocks/scenarios/definitions.ts`), selecionáveis por `?scenario=`, pelo painel "Simulação" ou por `VITE_MOCK_SCENARIO`, e persistidos: `default`, `empty`, `slow`, `variable-latency` (latência com semente), `out-of-order`, `flaky` (503 até nova tentativa manual), `timeout` (primeira busca do catálogo e do detalhe sem resposta; o retry automático recupera), `server-error`, `offline`, `session-expired` (sessão de 30 s), `favorites-fail`, `price-change-on-checkout`, `sold-out-on-checkout`, `order-timeout`, `payment-rejected`, `order-pending`, `wallet-rejected`. A latência e as falhas são aplicadas por rota por um middleware único (`simulateNetwork`), e as sequências são reiniciadas a cada troca de cenário, o que garante reprodutibilidade.
+- **Plano de controle** (`/api/__mock/*`, usado pelo painel e pelo Playwright): estado e cenários, reset, troca de cenário, expirar sessões, alterar preço ou estoque de um NFT, resolver um pedido pendente ou todos os pendentes, derrubar o socket, pausar a entrega de eventos (simula socket atrasado, usado para provar a revalidação `QUOTE_STALE` no servidor), repetir o último evento (duplicado ou antigo).
 
 ### Transporte Socket.IO e limitações
 
@@ -158,7 +158,7 @@ O servidor de eventos usa `ws.link` do MSW com `@mswjs/socket.io-binding` (`toSo
 
 - **Tokens do Figma** extraídos pela API REST do Figma (`scripts/figma`): cores e estilos nomeados, tipografia (Roboto Mono), radius, sombras e espaçamentos, aplicados no `@theme` do Tailwind 4. O shadcn/ui foi adaptado a esses tokens (botões com raio de 3 px, primária âmbar com texto escuro, inputs com borda `#3f2319`).
 - Os ícones são gerados dos SVGs exportados do Figma, com `currentColor`, sem clip/mask (evita IDs duplicados) e com `aria-hidden`. As artes dos NFTs saem dos fills do Figma, convertidas para WebP em 4 larguras com `srcset`/`sizes`, `width`/`height` explícitos e prioridade no LCP.
-- **Breakpoints:** desktop a partir de `lg` (1024 px), com header e footer do Figma. Abaixo disso, o layout mobile dos frames: busca e filtros em sheet, cards com o coração sobre a arte, barra inferior de navegação e barras de ação fixas no detalhe, carrinho e pagamento. Verificado em 390, 768 e 1440 px.
+- **Breakpoints:** desktop a partir de `lg` (1024 px), com header e footer do Figma. Abaixo disso, o layout mobile dos frames: busca e filtros em sheet, cards com o coração sobre a arte, barra inferior de navegação e barras de ação fixas no detalhe, carrinho e pagamento. As medidas exatas do Figma valem a partir de 1280 px; entre 1024 e 1280 px, hero e tabela do carrinho ficam fluidos. Auditado sem overflow horizontal em 320 (equivale a zoom de 400%), 390, 768, 1024 e 1440 px, em todas as telas (inclusive perfil, carteiras e confirmação no mobile, que não têm frame).
 - **Skeletons com shimmer**, com as mesmas dimensões do conteúdo, desligados em `prefers-reduced-motion`. Todas as transições respeitam movimento reduzido.
 - **Acessibilidade:**
   - skip link e foco visível;
@@ -198,14 +198,14 @@ Medianas de 3 execuções por página e perfil, no build de demonstração (bund
 
 | Página | Perfil | Performance | Accessibility | Best Practices | SEO | LCP | CLS | TBT |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Início | Mobile | 72 | 100 | 100 | 100 | 5,02 s | 0 | 228 ms |
-| Início | Desktop | 98 | 100 | 100 | 100 | 1,03 s | 0 | 28 ms |
-| Detalhe | Mobile | 76 | 100 | 100 | 100 | 4,47 s | 0 | 187 ms |
-| Detalhe | Desktop | 99 | 100 | 100 | 100 | 0,95 s | 0 | 0 ms |
+| Início | Mobile | 75 | 100 | 100 | 100 | 4,98 s | 0 | 121 ms |
+| Início | Desktop | 99 | 100 | 100 | 100 | 0,99 s | 0 | 0 ms |
+| Detalhe | Mobile | 78 | 100 | 100 | 100 | 4,51 s | 0 | 130 ms |
+| Detalhe | Desktop | 99 | 100 | 100 | 100 | 0,96 s | 0 | 0 ms |
 
-Entre rodadas completas, a performance mobile variou ±2 a 3 pontos (ex.: 74/78 numa rodada anterior).
+Entre rodadas completas, a performance mobile variou ±2 a 3 pontos (ex.: 72/76 numa rodada anterior).
 
-**Abaixo da meta: Performance mobile (72 e 76, meta ≥ 90).** A causa é o LCP. No perfil mobile (CPU 4× mais lenta, rede 4G lenta simulada), o elemento LCP é a primeira arte do catálogo ou do detalhe, que depende de dados da API. Na demo, a API é o MSW, que precisa estar ativo antes de qualquer requisição. A cadeia crítica é: entrada → runtime do MSW (≈175 KB gzip; ≈0,7 s de avaliação de script no perfil mobile) → registro do service worker → requisição → render → imagem. A imagem em si já chega pré-carregada (atraso de carregamento ≈ 10 ms); o que pesa é a espera pela camada simulada, e esse custo não existiria com um backend real (o build `production` não contém o MSW).
+**Abaixo da meta: Performance mobile (75 e 78, meta ≥ 90).** A causa é o LCP. No perfil mobile (CPU 4× mais lenta, rede 4G lenta simulada), o elemento LCP é a primeira arte do catálogo ou do detalhe, que depende de dados da API. Na demo, a API é o MSW, que precisa estar ativo antes de qualquer requisição. A cadeia crítica é: entrada → runtime do MSW (≈175 KB gzip; ≈0,7 s de avaliação de script no perfil mobile) → registro do service worker → requisição → render → imagem. A imagem em si já chega pré-carregada (atraso de carregamento ≈ 10 ms); o que pesa é a espera pela camada simulada, e esse custo não existiria com um backend real (o build `production` não contém o MSW).
 
 Otimizações feitas e mantidas por medição:
 
@@ -222,22 +222,22 @@ A auditoria carrega a entrega completa (imagens, fonte, MSW, Socket.IO, painel d
 
 ## 12. Testes
 
-Playwright com projetos Chromium **desktop** (1440×900) e **mobile** (Pixel 7, 390×844), contra o build de demonstração (`build:demo` + `preview`). Cada teste usa um contexto novo, com banco reiniciado a partir do seed. As fixtures esperam o worker do MSW (`html[data-mocks=ready]`) e controlam os mocks somente pelo plano de controle HTTP executado dentro da página, sem tocar no estado da interface.
+Playwright com projetos Chromium **desktop** (1440×900) e **mobile** (Pixel 7, 390×844), contra o build de demonstração (`build:demo` + `preview`). Cada teste usa um contexto novo, com banco reiniciado a partir do seed. As fixtures esperam o worker do MSW (`html[data-mocks=ready]`) e, antes de disparar eventos, a conexão Socket.IO (`html[data-realtime=connected]`) e controlam os mocks somente pelo plano de controle HTTP executado dentro da página, sem tocar no estado da interface.
 
 | Suíte | Cobertura |
 | --- | --- |
 | 01 | busca, filtros combinados, ordenação, paginação, reinício da página, histórico, refresh, respostas fora de ordem, vazio |
 | 02 | acesso direto, refresh, NFT inexistente, edição esgotada (inclusive ao vivo) e limite de quantidade |
-| 03 | cadastro (validação e conflito), login com retorno, expiração durante a navegação, logout e troca de usuário sem vazamento |
+| 03 | cadastro (validação e conflito), login com retorno, expiração durante a navegação e durante o checkout (rascunho preservado), logout e troca de usuário sem vazamento |
 | 04 | favoritos otimistas, persistência, falha com rollback, visitante redirecionado |
 | 05 | quantidades, remoção, cupons (inválido, expirado, válido), persistência após refresh, mescla no login, limite por pedido |
 | 06 | compra completa até o recibo; recibo imutável; remoção parcial do carrinho |
 | 07 | pagamento recusado, clique repetido (um único POST), timeout com recuperação pela mesma chave (`page.clock`) |
 | 08 | perfil (validação, conflito, persistência), avatar, senha, carteiras principal e secundária com erros |
 | 09 | preço alterado com o carrinho aberto, cotação desatualizada bloqueada (evento e `QUOTE_STALE`), edição esgotada na revisão |
-| 10 | eventos duplicados e antigos, reconexão com reconciliação, pedido pendente retomado após refresh, isolamento de pedidos |
+| 10 | eventos duplicados e antigos, evento perdido reconciliado após reconexão, pedido pendente retomado após refresh, pedido de outro usuário (403) |
 | 11 | teclado (skip link, card), foco de diálogo, erros associados, axe |
-| 12 | skeletons em rede lenta, falha com nova tentativa, offline e retomada |
+| 12 | skeletons em rede lenta, falha com nova tentativa, timeout com retry automático (`page.clock`), offline e retomada |
 | 13 | regressão visual de início, detalhe, carrinho e pagamento (desktop e mobile) |
 
 As baselines visuais foram geradas no Windows (sufixo `win32`). Em outra plataforma, gere as baselines locais com `npm run test:e2e:update -- 13-visual`.

@@ -82,6 +82,20 @@ export function ScenarioPanel() {
             >
               Esgotar edição 1/50 do Emerald Ape #042
             </button>
+            <button
+              type="button"
+              className="rounded-sm border border-border px-2 py-1.5 text-left hover:border-primary"
+              onClick={() => void run('Confirmando pedidos pendentes', () => control('POST', '/orders/resolve-pending', { status: 'confirmed' }))}
+            >
+              Confirmar pedidos pendentes
+            </button>
+            <button
+              type="button"
+              className="rounded-sm border border-border px-2 py-1.5 text-left hover:border-primary"
+              onClick={() => void run('Recusando pedidos pendentes', () => control('POST', '/orders/resolve-pending', { status: 'rejected' }))}
+            >
+              Recusar pedidos pendentes
+            </button>
             <button type="button" className="rounded-sm border border-border px-2 py-1.5 text-left hover:border-primary" onClick={() => void run('Expirando sessões', () => control('POST', '/sessions/expire'))}>
               Expirar sessão
             </button>

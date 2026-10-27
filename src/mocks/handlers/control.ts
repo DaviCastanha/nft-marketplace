@@ -61,6 +61,14 @@ export const controlHandlers = [
     return HttpResponse.json({ id: nft.id, version: nft.version, price: nft.price, available: nft.available })
   }),
 
+  // Demo panel: settle every order still pending (the "order-pending" scenario holds them).
+  control('post', '/orders/resolve-pending', async ({ request }) => {
+    const { status } = await parseBody(request, z.object({ status: z.enum(['confirmed', 'rejected']) }))
+    const pending = Object.values(db().orders).filter((order) => order.status === 'pending')
+    for (const order of pending) settleOrder(order.id, status)
+    return HttpResponse.json({ resolved: pending.length })
+  }),
+
   control('post', '/orders/:id/resolve', async ({ request, params }) => {
     const { status } = await parseBody(request, z.object({ status: z.enum(['confirmed', 'rejected']) }))
     const order = settleOrder(param(params, 'id'), status)
